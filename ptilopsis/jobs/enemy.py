@@ -382,16 +382,16 @@ def linked_enemy_links(
     enemy_data_table: dict[str, EnemyHandBookData],
     enemy_levels: dict[str, list[EnemyDatabaseEnemyLevel]],
 ) -> list[str]:
-    """相关敌人的 ``[[名称]]``。
+    """相关敌人的 ``[[页面名]]``。
 
-    优先用图鉴名;图鉴里没有的敌人取 enemy_database 级别 0 的名字。
+    图鉴里有的敌人用 :func:`page_title`;没有的取 enemy_database 级别 0 的名字。
     """
 
     links = []
     for link_id in link_ids:
         handbook = enemy_data_table.get(link_id)
         if handbook is not None:
-            links.append(f"[[{(handbook.name or '').strip()}]]")
+            links.append(f"[[{page_title(handbook)}]]")
             continue
         levels = enemy_levels.get(link_id)
         if not levels or levels[0].enemy_data is None:
@@ -597,11 +597,21 @@ async def update_immune(
     """给已建页的敌人各级别补上后来新增的 ``战栗抗性`` 一项。"""
 
     page_titles = {page.replace("(敌方)", ""): page for page in enemy_pages}
-    enemies = [
-        (page_titles[enemy.name.strip()].strip(), enemy)
-        for enemy in (enemy_handbook_table.enemy_data or {}).values()
-        if enemy.name is not None and enemy.name != "-"
-    ]
+    enemies: list[tuple[str, EnemyHandBookData]] = []
+    for enemy in (enemy_handbook_table.enemy_data or {}).values():
+        if enemy.name is None or enemy.name == "-":
+            continue
+        title = page_titles.get(page_title(enemy))
+        if title is None:
+            # 没有页面可补。图鉴里隐藏的条目 run 不建页(如 enemy_2062_smcar),
+            # 其它的是 run 还没给它建页
+            if not enemy.hide_in_handbook:
+                logger.warning(
+                    f"Page {page_title(enemy)} ({enemy.enemy_id}) is not in "
+                    "分类:敌人; skipped"
+                )
+            continue
+        enemies.append((title.strip(), enemy))
     # 一次性批量读取全部敌人页,再逐个比对、按需编辑
     texts = await wiki.read_many(title for title, _ in enemies)
     for title, enemy in enemies:
@@ -626,4 +636,4 @@ async def update_immune(
             await wiki.edit(title=title, text=new_page, summary="更新抗性")
             # 多个敌人 ID 可能共用一个页面,后面的比对要基于这次改过的文本
             texts[title] = new_page
-            logger.info(f"Updated: {enemy.name}.")
+            logger.info(f"Updated: {title}.")
