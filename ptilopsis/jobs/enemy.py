@@ -106,6 +106,15 @@ INDEXED_PAGE_ENEMIES = frozenset({"DC3", "HI02", "STU2", "OB19"})
 它的页面是 ``“惘核”(OB19)``。页面里的 ``|名称=`` 仍是原名。
 """
 
+PAGE_TITLE_OVERRIDES: dict[str, str] = {
+    "enemy_1602_blksnk2": "不死的黑蛇(第二形态)",
+    "enemy_1603_hlystp2": "最后的圣愚(第二形态)",
+}
+"""enemy_id → 页面名。和别的敌人同名同 enemyIndex、要单独建页的图鉴条目。
+
+页面里的 ``|名称=`` 仍是原名。
+"""
+
 Undefinable = UndefinableStr | UndefinableInt | UndefinableFloat | UndefinableBool
 """enemy_database 里"可能没定义"的一项属性。"""
 
@@ -115,8 +124,13 @@ def _lookup(names: dict[str, str], key: str | None, default: str) -> str:
 
 
 def page_title(enemy: EnemyHandBookData) -> str:
-    """敌人页面的标题:一般是图鉴名,重名条目后面加 ``(enemyIndex)``。"""
+    """敌人页面的标题:一般是图鉴名,重名条目后面加 ``(enemyIndex)``。
 
+    ``PAGE_TITLE_OVERRIDES`` 里的条目直接用其中的页面名。
+    """
+
+    if enemy.enemy_id in PAGE_TITLE_OVERRIDES:
+        return PAGE_TITLE_OVERRIDES[enemy.enemy_id]
     name = (enemy.name or "").strip()
     if enemy.enemy_index in INDEXED_PAGE_ENEMIES:
         return f"{name}({enemy.enemy_index})"
@@ -446,7 +460,7 @@ async def run(
             "skin": {"默认": {"战斗": {"file": f"{enemy.enemy_id}"}}},
         }
 
-        # 图鉴里可能有多个同名条目(如 enemy_1602_blksnk / blksnk2),只按第一个建页
+        # 图鉴里可能有多个同名条目(如 KNT 的两个“坎诺特”),只按第一个建页
         existing.add(title)
         created = await wiki.create(
             title=title,
@@ -541,6 +555,8 @@ async def update_data(
             new_data["enemyLink"] += "(我方)"
         if new_data["enemyIndex"] in INDEXED_PAGE_ENEMIES:
             new_data["enemyLink"] += f'({new_data["enemyIndex"]})'
+        if enemy.enemy_id in PAGE_TITLE_OVERRIDES:
+            new_data["enemyLink"] = PAGE_TITLE_OVERRIDES[enemy.enemy_id]
         # 种族
         if summary.race_tags:
             new_data["enemyRace"] = ",".join(
