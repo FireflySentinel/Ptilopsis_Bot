@@ -61,13 +61,14 @@ def multipart_names(request: httpx2.Request) -> list[str]:
 
 
 class FakeMediaWiki:
-    """能应付登录、tokens、titles 查询与 edit 的最小 MediaWiki。"""
+    """能应付登录、tokens、titles 查询、edit 与 protect 的最小 MediaWiki。"""
 
     def __init__(self, pages: dict[str, str]) -> None:
         self.pages = pages
         self.requests: list[dict[str, str]] = []
         self.token_serial = 0
         self.edits: list[dict[str, str]] = []
+        self.protects: list[dict[str, str]] = []
         self.reject_tokens: set[str] = set()
         self.error: dict[str, str] | None = None
         """设置后所有 edit 都返回这个错误。"""
@@ -132,6 +133,9 @@ class FakeMediaWiki:
                 }
             self.edits.append(p)
             return {"edit": {"result": "Success", "title": p["title"]}}
+        if action == "protect":
+            self.protects.append(p)
+            return {"protect": {"title": p["title"]}}
         raise AssertionError(p)
 
     def query_pages(self, titles: list[str]) -> Any:
@@ -364,6 +368,45 @@ async def test_createonly_on_existing_page_is_not_an_error() -> None:
     # 不带 createonly 时同一个错误照常抛出
     with pytest.raises(WikiError, match="articleexists"):
         await wiki.edit(title="页面", text="1")
+
+
+async def test_create_protects_the_page_it_created() -> None:
+    wiki, server = make_wiki({})
+    created = await wiki.create(
+        title="页面",
+        text="1",
+        summary="init",
+        contentmodel="json",
+        protections="edit=autoconfirmed|move=sysop",
+    )
+    assert created is True
+    assert server.edits[0]["createonly"] == "1"
+    assert server.edits[0]["contentmodel"] == "json"
+    assert server.protects[0]["title"] == "页面"
+    assert server.protects[0]["protections"] == "edit=autoconfirmed|move=sysop"
+    assert server.protects[0]["expiry"] == "infinite"
+    # 不给 protections 就只建页
+    assert await wiki.create(title="页面2", text="1") is True
+    assert len(server.protects) == 1
+
+
+async def test_create_leaves_existing_page_unprotected() -> None:
+    # 占了名字的重定向等已有页面不能被顺手保护
+    wiki, server = make_wiki({})
+    server.error = {
+        "code": "articleexists",
+        "info": "The article you tried to create has been created already.",
+    }
+    created = await wiki.create(title="页面", text="1", protections="edit=sysop")
+    assert created is False
+    assert server.protects == []
+    assert not any(r["action"] == "protect" for r in server.requests)
+
+
+async def test_create_in_dev_mode_previews_protection() -> None:
+    wiki, server = make_wiki({}, mode="dev")
+    assert await wiki.create(title="页面", text="1", protections="edit=sysop")
+    assert server.requests == []
 
 
 async def test_dev_mode_does_not_write() -> None:

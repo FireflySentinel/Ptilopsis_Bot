@@ -25,7 +25,10 @@ from ptilopsis.log import logger
 from ptilopsis.utils.http import log_retry, make_client
 from ptilopsis.utils.ratelimit import DEFAULT_COOLDOWN, Throttle, parse_ratelimits
 
-__all__ = ["PageRevision", "Wiki", "WikiError"]
+__all__ = ["PAGE_PROTECTIONS", "PageRevision", "Wiki", "WikiError"]
+
+PAGE_PROTECTIONS = "edit=autoconfirmed|move=sysop|delete=sysop"
+"""bot 新建的干员页、敌人页(含 /spine)的保护等级,配合 :meth:`Wiki.create` 使用。"""
 
 READ_CHUNK = 50
 """一次 ``action=query`` 里带的标题数;普通用户上限 50,bot 有 apihighlimits 才是 500。"""
@@ -355,6 +358,32 @@ class Wiki:
                 logger.info(f"Page already exists, skip: {title or pageid}")
                 return None
             raise
+
+    async def create(
+        self,
+        title: str,
+        text: str,
+        *,
+        protections: str | None = None,
+        protect_reason: str = "protect",
+        **edit_args: Any,
+    ) -> bool:
+        """新建页面,建成后按 ``protections`` 加保护;页面已存在时两样都不做。
+
+        已存在的页面可能是占了名字的重定向或同名的其它页面,给它加保护会挡住
+        之后的人工处理(如删除重定向),所以只保护自己建的页面。
+        ``edit_args`` 原样传给 :meth:`edit`。
+
+        :return: 是否建了页面;dev 模式下不知道页面在不在,按建了处理
+        """
+        res = await self.edit(title=title, text=text, createonly=True, **edit_args)
+        if res is None and self.mode == "product":
+            return False
+        if protections is not None:
+            await self.protect(
+                title=title, protections=protections, reason=protect_reason
+            )
+        return True
 
     async def protect(
         self,
