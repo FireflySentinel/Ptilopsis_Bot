@@ -6,8 +6,14 @@ from typing import Any
 
 import httpx2
 import pytest
+from tenacity import wait_none
 
-from ptilopsis.utils.torappu import READY_MARKER, TorappuClient, TorappuVersion
+from ptilopsis.utils.torappu import (
+    READY_MARKER,
+    ChallengePageError,
+    TorappuClient,
+    TorappuVersion,
+)
 
 pytestmark = pytest.mark.anyio
 
@@ -74,6 +80,54 @@ async def test_fetch_returns_bytes_and_404_becomes_file_not_found() -> None:
         await client.fetch(V, "excel/nope.json")
     # 404 不重试
     assert server.calls.count(("GET", f"{BASE}/gamedata/{V}/excel/nope.json")) == 1
+
+
+CHALLENGE = b"<html><script>document.location.reload();</script></html>"
+
+
+def challenge_page() -> httpx2.Response:
+    """CDN CC 防护的 JS 挑战页:200 + HTML + 下发 cookie。"""
+    return httpx2.Response(
+        200,
+        headers={"content-type": "text/html", "set-cookie": "acw_sc__v2=ok; path=/"},
+        content=CHALLENGE,
+    )
+
+
+@pytest.fixture
+def no_retry_wait(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(TorappuClient.fetch.retry, "wait", wait_none())
+
+
+async def test_challenge_page_is_retried_with_its_cookie(no_retry_wait: None) -> None:
+    sent: list[httpx2.Request] = []
+
+    def handle(request: httpx2.Request) -> httpx2.Response:
+        sent.append(request)
+        if "acw_sc__v2=ok" not in request.headers.get("cookie", ""):
+            return challenge_page()
+        return httpx2.Response(
+            200, headers={"content-type": "text/plain"}, content=b"story"
+        )
+
+    http = httpx2.AsyncClient(transport=httpx2.MockTransport(handle))
+    client = TorappuClient(BASE, client=http)
+    assert await client.fetch(V, "story/a.txt") == b"story"
+    assert len(sent) == 2
+
+
+async def test_persistent_challenge_page_is_never_returned_as_content(
+    no_retry_wait: None,
+) -> None:
+    client, server = make_client({f"{BASE}/gamedata/{V}/story/a.txt": challenge_page()})
+    with pytest.raises(ChallengePageError):
+        await client.fetch(V, "story/a.txt")
+    assert len(server.calls) == 3
+
+    # 没带 content-type 的也认得出来
+    bare, _ = make_client({f"{BASE}/gamedata/{V}/story/b.txt": CHALLENGE})
+    with pytest.raises(ChallengePageError):
+        await bare.fetch(V, "story/b.txt")
 
 
 async def test_non_http_errors_are_not_retried() -> None:

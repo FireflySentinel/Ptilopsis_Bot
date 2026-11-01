@@ -36,7 +36,13 @@ from tenacity import (
 from ptilopsis.log import logger
 from ptilopsis.utils.http import log_retry, make_client
 
-__all__ = ["READY_MARKER", "TorappuClient", "TorappuEntry", "TorappuVersion"]
+__all__ = [
+    "READY_MARKER",
+    "ChallengePageError",
+    "TorappuClient",
+    "TorappuEntry",
+    "TorappuVersion",
+]
 
 READY_MARKER = ".gamedata-ready.json"
 """gamedata 解包完成后 torappu 在版本目录下写的标记文件。"""
@@ -67,6 +73,23 @@ class TorappuEntry(BaseModel):
     """相对 torappu 文件根的路径,如 ``gamedata/<resVersion>/excel/item_table.json``。"""
     size: int = 0
     is_dir: bool
+
+
+class ChallengePageError(httpx2.HTTPError):
+    """CDN 用 200 返回了 HTML 挑战页,而不是文件内容。
+
+    torappu 前面的 CDN(Tengine)触发 CC 防护时,会对任意路径(包括本该 404 的)
+    返回 ``<html><script>document.location.reload();</script></html>`` 并下发
+    cookie。按网络错误重试:客户端带着 cookie 再请求一次;重试用完仍是挑战页
+    就抛出,绝不能把它当成文件内容缓存、写进页面。
+    """
+
+
+def _is_html(resp: httpx2.Response) -> bool:
+    if resp.headers.get("content-type", "").startswith("text/html"):
+        return True
+    # 没带 content-type 时看正文开头;gamedata 只有 json / txt 等,不会是 HTML
+    return resp.content.lstrip()[:5].lower() == b"<html"
 
 
 def _transient(name: str) -> Any:
@@ -163,6 +186,8 @@ class TorappuClient:
         if resp.status_code == 404:
             raise FileNotFoundError(f"torappu has no {path!r} for {res_version}")
         resp.raise_for_status()
+        if _is_html(resp):
+            raise ChallengePageError(f"torappu returned an HTML page for {path!r}")
         return resp.content
 
     @_transient("exists")
