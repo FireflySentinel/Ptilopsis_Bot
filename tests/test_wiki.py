@@ -1,6 +1,7 @@
 """Wiki 客户端:登录、批量读取、csrf token 缓存、badtoken 重试与限速,全部离线。"""
 
 import json
+import re
 import time
 from datetime import UTC, datetime, timedelta
 from email.parser import BytesParser
@@ -29,6 +30,7 @@ from ptilopsis.utils.wiki import (
 pytestmark = pytest.mark.anyio
 
 API = "https://wiki.example/api.php"
+REDIRECT = re.compile(r"#REDIRECT \[\[(.+?)\]\]")
 
 
 def post_params(request: httpx2.Request) -> dict[str, str]:
@@ -119,7 +121,7 @@ class FakeMediaWiki:
                 else {"result": "Failed", "reason": "Incorrect password"}
             }
         if action == "query" and "titles" in p:
-            return self.query_pages(p["titles"].split("|"))
+            return self.query_pages(p["titles"].split("|"), "redirects" in p)
         if action == "edit":
             if self.error is not None:
                 return {"error": self.error}
@@ -138,13 +140,18 @@ class FakeMediaWiki:
             return {"protect": {"title": p["title"]}}
         raise AssertionError(p)
 
-    def query_pages(self, titles: list[str]) -> Any:
+    def query_pages(self, titles: list[str], follow: bool = False) -> Any:
         pages: dict[str, Any] = {}
         normalized = []
+        redirects = []
         for i, title in enumerate(titles):
             canonical = title.replace("_", " ")
             if canonical != title:
                 normalized.append({"from": title, "to": canonical})
+            # redirects=1:像 MediaWiki 一样一路解析,只列出最终页面
+            while follow and (m := REDIRECT.match(self.pages.get(canonical) or "")):
+                redirects.append({"from": canonical, "to": m[1]})
+                canonical = m[1]
             if canonical not in self.pages:
                 pages[str(-(i + 1))] = {"title": canonical, "missing": ""}
                 continue
@@ -168,7 +175,11 @@ class FakeMediaWiki:
             pages[str(i + 1)] = page
         return {
             "curtimestamp": "2026-01-02T00:00:00Z",
-            "query": {"normalized": normalized, "pages": pages},
+            "query": {
+                "normalized": normalized,
+                "redirects": redirects,
+                "pages": pages,
+            },
         }
 
 
@@ -247,6 +258,27 @@ async def test_read_revisions_returns_ids_timestamps_and_redirects() -> None:
         1,
     ]
     assert server.requests[0]["rvprop"] == "ids|timestamp|content"
+
+
+async def test_resolve_follows_redirects_and_drops_missing() -> None:
+    pages: dict[str, Any] = {f"关卡{i}": "text" for i in range(READ_CHUNK)}
+    pages |= {
+        "St 06-02": "#REDIRECT [[6-13]]",
+        "6-13": "#REDIRECT [[6-13 没有火，没有光]]",
+        "6-13 没有火，没有光": "stage",
+        "断链": "#REDIRECT [[已删除的页面]]",
+    }
+    wiki, server = make_wiki(pages)
+
+    got = await wiki.resolve(["St_06-02", "断链", "缺失的页面", *pages])
+
+    # 双重重定向解析到底;规范化前的标题映射回去;指向不存在页面的重定向算不存在
+    assert got["St_06-02"] == "6-13 没有火，没有光"
+    assert got["6-13"] == "6-13 没有火，没有光"
+    assert got["关卡0"] == "关卡0"
+    assert "断链" not in got and "缺失的页面" not in got
+    assert len(server.requests) == 2
+    assert server.requests[0]["redirects"] == "1"
 
 
 async def test_edit_passes_conflict_detection_timestamps() -> None:

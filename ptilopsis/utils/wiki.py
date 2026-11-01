@@ -551,6 +551,35 @@ class Wiki:
                     result[key] = snapshot
         return result
 
+    async def resolve(self, titles: Iterable[str]) -> dict[str, str]:
+        """批量解析重定向,返回 ``{标题: 最终页面标题}``;不存在的页面不在结果里。
+
+        重定向一路解析到底,指向不存在页面的重定向也算不存在;不是重定向的页面
+        映射到规范化后的自身。分批与标题映射的规则同 :meth:`read_many`。
+        """
+        titles = list(dict.fromkeys(titles))
+        result: dict[str, str] = {}
+        for start in range(0, len(titles), READ_CHUNK):
+            chunk = titles[start : start + READ_CHUNK]
+            res = await self._query({"titles": "|".join(chunk), "redirects": 1})
+            query = res["query"]
+            normalized = {i["from"]: i["to"] for i in query.get("normalized", [])}
+            redirects = {i["from"]: i["to"] for i in query.get("redirects", [])}
+            existing = {
+                page["title"]
+                for page in query.get("pages", {}).values()
+                if "missing" not in page and "invalid" not in page
+            }
+            for title in chunk:
+                target = normalized.get(title, title)
+                seen = {target}
+                while target in redirects and redirects[target] not in seen:
+                    target = redirects[target]
+                    seen.add(target)
+                if target in existing:
+                    result[title] = target
+        return result
+
     async def category(self, category: str) -> list[str]:
         CM_LIMIT = 1000  # noqa: N806
         cat_page_list: list[str] = []
