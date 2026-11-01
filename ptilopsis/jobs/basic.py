@@ -1102,24 +1102,31 @@ def trans_team(team_id: str | None, team_table: TeamTable) -> str:
 
 
 def trans_skill_type(skill_type):
-    """技能触发方式;被动技能没有这一项。"""
+    """技能触发方式,即客户端技能标签里的 TAG_SKILL_TRIGGER_*。"""
 
     return {
+        0: "被动",
         1: "手动触发",
         2: "自动触发",
+        "PASSIVE": "被动",
         "MANUAL": "手动触发",
         "AUTO": "自动触发",
     }.get(skill_type, "")
 
 
 def trans_sp_type(sp_type):
-    # 8 不在客户端 SpType 枚举里,数据里直接是数字;模型把它转成字符串 "8"
+    """技力回复方式,即客户端技能标签里的 TAG_SKILL_SP_*。
+
+    客户端(DataConvertUtil.LoadSkillTags)只认 1/2/4 三个位,其余取值不显示
+    回复标签。数据里常见的 8 是 SpTypeIndex.NEVER_USE(技力不回复),不在 SpType
+    枚举里,JSON 直接存数字,模型转成字符串 "8";它和"被动"无关,被动看的是
+    skillType。
+    """
+
     return {
         1: "自动回复",
         2: "攻击回复",
         4: "受击回复",
-        8: "被动",
-        "8": "被动",
         "INCREASE_WITH_TIME": "自动回复",
         "INCREASE_WHEN_ATTACK": "攻击回复",
         "INCREASE_WHEN_TAKEN_DAMAGE": "受击回复",
