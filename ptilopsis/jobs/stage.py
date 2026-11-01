@@ -2076,6 +2076,24 @@ def _build_enemy_views(
     )
 
 
+async def _existing_stage_ids(wiki: Wiki, pages: dict[str, str]) -> set[str]:
+    """``pages`` 是 stageId → 按名字拼出、但分类里没有的页面名;返回其中已经建过页的。
+
+    关卡改名后(如 6-13「没有火,没有光」的逗号改成全角)按名字找不到旧页面,
+    会被当成新关卡再建一页、写进首页/新增关卡。建页时总会顺手建一个以 stageId
+    命名的重定向页,它仍指向旧页面,能解析到已有页面就说明这关早就建过;
+    旧页面要不要随之改名留给编辑处理。
+    """
+
+    existing = await wiki.resolve(pages)
+    for stage_id, page in existing.items():
+        logger.warning(
+            f"{stage_id} already has page {page!r}, "
+            f"skip creating {pages[stage_id]!r} (stage renamed?)."
+        )
+    return set(existing)
+
+
 @job
 async def run(
     wiki: Wiki,
@@ -2140,6 +2158,10 @@ async def run(
         if stage_page_name in stage_list:
             continue
         candidates.append((stage_id, stage, code, stage_page_name))
+    existing = await _existing_stage_ids(
+        wiki, {stage_id: page for stage_id, _, _, page in candidates}
+    )
+    candidates = [c for c in candidates if c[0] not in existing]
 
     # 预取时不校验 pair.level_id:缺失的情况留给下面的循环按原逻辑记日志跳过
     await levels.prefetch(
@@ -2294,6 +2316,10 @@ async def run_campaign(
         if stage_page_name in stage_list:
             continue
         candidates.append((stage, name, stage_page_name))
+    existing = await _existing_stage_ids(
+        wiki, {_require(s.stage_id, "stageId"): page for s, _, page in candidates}
+    )
+    candidates = [c for c in candidates if c[0].stage_id not in existing]
 
     await levels.prefetch(
         stage.level_id for stage, _, _ in candidates if stage.level_id
