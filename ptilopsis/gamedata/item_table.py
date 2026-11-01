@@ -330,7 +330,9 @@ class InventoryData(GameDataModel):
     uni_collection_info: dict[str, UniCollectionInfo] | None = None
     item_pack_infos: dict[str, ItemPackInfo] | None = None
     full_potential_characters: dict[str, FullPotentialCharacterInfo] | None = None
-    activity_potential_characters: dict[str, ActivityPotentialCharacterInfo] | None = None
+    activity_potential_characters: dict[str, ActivityPotentialCharacterInfo] | None = (
+        None
+    )
     favor_characters: dict[str, FavorCharacterInfo] | None = None
     item_shop_name_dict: dict[str, str] | None = None
 

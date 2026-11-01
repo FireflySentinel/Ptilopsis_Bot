@@ -341,7 +341,9 @@ class CampaignTable(GameDataModel):
     campaign_const_table: CampaignConstTable | None = None
     campaign_rotate_stage_open_times: list[CampaignRotateOpenTimeData] | None = None
     campaign_training_stage_open_times: list[CampaignTrainingOpenTimeData] | None = None
-    campaign_training_all_open_times: list[CampaignTrainingAllOpenTimeData] | None = None
+    campaign_training_all_open_times: list[CampaignTrainingAllOpenTimeData] | None = (
+        None
+    )
     campaign_zone_map_data: dict[str, dict[str, CampaignStageMapData]] | None = None
 
 

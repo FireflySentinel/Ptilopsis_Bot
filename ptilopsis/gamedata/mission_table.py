@@ -289,7 +289,9 @@ class MissionTable(GameDataModel):
     so_char_mission_group_info: dict[str, SOCharMissionGroup] | None = None
     daily_mission_group_info: dict[str, DailyMissionGroupInfo] | None = None
     daily_mission_period_info: list[DailyMissionGroupInfo] | None = None
-    mainline_mission_end_image_data_list: list[MainlineMissionEndImageData] | None = None
+    mainline_mission_end_image_data_list: list[MainlineMissionEndImageData] | None = (
+        None
+    )
     cross_app_share_missions: dict[str, CrossAppShareMission] | None = None
     cross_app_share_mission_const: CrossAppShareMissionConst | None = None
     guide_mission_group_info: dict[str, GuideMissionGroupInfo] | None = None

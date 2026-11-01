@@ -22,12 +22,15 @@ FBS 是从客户端类型自动生成的,已经吸收了 ``[JsonProperty]`` 改�
   下划线后缀并给 alias。
 - ``root_type clz_Torappu_SimpleKVTable_clz_Torappu_X`` 的表在 JSON 里被拆成
   ``{id: X}``,生成 ``<Table> = TypeAdapter(dict[str, X])``。
+
+写出的文件最后统一过一遍 ``ruff format``,长字段不会超出行宽触发 E501。
 """
 
 from __future__ import annotations
 
 import keyword
 import re
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -375,13 +378,24 @@ def generate(table_name: str) -> Path:
     return out
 
 
+def format_files(paths: list[Path]) -> None:
+    """按仓库的 ruff 配置格式化生成的文件(ruff 在 dev 依赖里)。"""
+    subprocess.run(
+        [sys.executable, "-m", "ruff", "format", "--quiet", *map(str, paths)],
+        cwd=ROOT,
+        check=True,
+    )
+
+
 def main(argv: list[str]) -> None:
     if not argv:
         sys.exit(__doc__)
     if argv == ["--all"]:
         argv = TABLES
-    for table_name in argv:
-        sys.stdout.write(f"{generate(table_name)}\n")
+    written = [generate(table_name) for table_name in argv]
+    format_files(written)
+    for path in written:
+        sys.stdout.write(f"{path}\n")
 
 
 if __name__ == "__main__":

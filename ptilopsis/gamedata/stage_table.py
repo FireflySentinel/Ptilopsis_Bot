@@ -841,7 +841,9 @@ class StageTable(GameDataModel):
     stage_start_conds: dict[str, StageStartCond] | None = None
     diff_group_table: dict[str, StageDiffGroupTable] | None = None
     story_stage_show_group: dict[str, dict[str, StoryStageShowGroup]] | None = None
-    special_battle_finish_stage_data: dict[str, SpecialBattleFinishStageData] | None = None
+    special_battle_finish_stage_data: dict[str, SpecialBattleFinishStageData] | None = (
+        None
+    )
     record_reward_data: dict[str, RecordRewardServerData] | None = None
     ap_protect_zone_info: dict[str, ApProtectZoneInfo] | None = None
     anti_spoiler_dict: dict[str, list[str]] | None = None

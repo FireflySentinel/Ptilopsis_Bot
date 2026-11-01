@@ -791,7 +791,9 @@ class SandboxPermBasicData(GameDataModel):
     sort_id: int = 0
     price_item_id: str | None = None
     template_shop_id: str | None = None
-    home_entry_display_data: list[SandboxPermBasicDataHomeEntryDisplayData] | None = None
+    home_entry_display_data: list[SandboxPermBasicDataHomeEntryDisplayData] | None = (
+        None
+    )
     web_bus_type: str | None = None
     medal_group_id: str | None = None
     show_medal_id: str | None = None
@@ -1115,7 +1117,9 @@ class SandboxV2BattleRushEnemyDataRushEnemyDBRef(GameDataModel):
 class SandboxV2BattleRushEnemyData(GameDataModel):
     """clz_Torappu_SandboxV2BattleRushEnemyData"""
 
-    rush_enemy_group_configs: dict[str, list[SandboxV2BattleRushEnemyGroupConfig]] | None = None
+    rush_enemy_group_configs: (
+        dict[str, list[SandboxV2BattleRushEnemyGroupConfig]] | None
+    ) = None
     rush_enemy_db_ref: list[SandboxV2BattleRushEnemyDataRushEnemyDBRef] | None = None
 
 
@@ -1914,9 +1918,15 @@ class SandboxV2ChallengeModeData(GameDataModel):
     """clz_Torappu_SandboxV2ChallengeModeData"""
 
     challenge_const: SandboxV2ChallengeConst | None = None
-    challenge_mode_unlock_data: dict[str, SandboxV2ChallengeModeUnlockData] | None = None
-    challenge_mode_reward_data: dict[str, SandboxV2ChallengeModeRewardData] | None = None
-    challenge_mode_difficulty_data: list[SandboxV2ChallengeModeDifficultyData] | None = None
+    challenge_mode_unlock_data: dict[str, SandboxV2ChallengeModeUnlockData] | None = (
+        None
+    )
+    challenge_mode_reward_data: dict[str, SandboxV2ChallengeModeRewardData] | None = (
+        None
+    )
+    challenge_mode_difficulty_data: (
+        list[SandboxV2ChallengeModeDifficultyData] | None
+    ) = None
 
 
 class SandboxV2Data(GameDataModel):
@@ -1965,7 +1975,9 @@ class SandboxV2Data(GameDataModel):
     shop_good_data: dict[str, SandboxShopGoodData] | None = None
     shop_dialog_data: SandboxV2ShopDialogData | None = None
     logistics_data: list[SandboxV2LogisticsData] | None = None
-    logistics_char_mapping: dict[int, dict[int, list[SandboxV2LogisticsCharData]]] | None = None
+    logistics_char_mapping: (
+        dict[int, dict[int, list[SandboxV2LogisticsCharData]]] | None
+    ) = None
     material_keyword_data: dict[str, str] | None = None
     month_rush_data: list[SandboxV2MonthRushData] | None = None
     rift_terrain_param_data: dict[str, SandboxV2RiftParamData] | None = None
@@ -1985,7 +1997,9 @@ class SandboxV2Data(GameDataModel):
     archive_quest_type_data: dict[str, SandboxArchiveQuestTypeData] | None = None
     archive_music_unlock_data: dict[str, SandboxArchiveMusicUnlockData] | None = None
     base_update: list[SandboxV2BaseUpdateData] | None = None
-    development_line_segment_datas: list[SandboxDevelopmentLineSegmentData] | None = None
+    development_line_segment_datas: list[SandboxDevelopmentLineSegmentData] | None = (
+        None
+    )
     building_node_score_data: dict[str, SandboxV2BuildingNodeScoreData] | None = None
     season_data: dict[str, SandboxV2SeasonData] | None = None
     confirm_icon_data: list[SandboxV2ConfirmIconData] | None = None
@@ -2888,7 +2902,9 @@ class SandboxV3GameConst(GameDataModel):
     lucky_reward_max: int = 0
     band_achievement_score: int = 0
     general_trademan_skill_index: int = 0
-    general_trademan_avg_path: str | None = Field(default=None, alias="generalTrademanAVGPath")
+    general_trademan_avg_path: str | None = Field(
+        default=None, alias="generalTrademanAVGPath"
+    )
     hide_cook_entry_node_ids: list[str] | None = None
     hide_shop_entry_node_ids: list[str] | None = None
     show_processor_not_working_interval: int = 0
@@ -2923,7 +2939,9 @@ class SandboxV3Data(GameDataModel):
     stage_data: dict[str, SandboxV3StageData] | None = None
     story_stage_data: dict[str, SandboxV3StoryStageData] | None = None
     explore_stage_data: dict[str, SandboxV3ExploreStageData] | None = None
-    explore_stage_difficulty_data: dict[str, SandboxV3ExploreStageDifficultyData] | None = None
+    explore_stage_difficulty_data: (
+        dict[str, SandboxV3ExploreStageDifficultyData] | None
+    ) = None
     sub_stage_data: dict[str, SandboxV3SubStageData] | None = None
     stage_drop_data: dict[str, SandboxV3StageDropData] | None = None
     navigation_node_ids: list[str] | None = None
@@ -2934,11 +2952,15 @@ class SandboxV3Data(GameDataModel):
     random_item_data: dict[str, SandboxV3RandomItemData] | None = None
     item_extra_data: dict[str, SandboxV3ItemExtraData] | None = None
     development_data: dict[str, SandboxDevelopmentData] | None = None
-    development_line_segment_datas: list[SandboxDevelopmentLineSegmentData] | None = None
+    development_line_segment_datas: list[SandboxDevelopmentLineSegmentData] | None = (
+        None
+    )
     defend_score_data: list[SandboxV3DefendScoreData] | None = None
     zone_defend_datas: dict[str, SandboxV3ZoneDefendData] | None = None
     basement_update_datas: list[SandboxV3BasementUpdateData] | None = None
-    basement_preview_datas: dict[str, SandboxV3BasementUpdateFunctionPreviewDetailData] | None = None
+    basement_preview_datas: (
+        dict[str, SandboxV3BasementUpdateFunctionPreviewDetailData] | None
+    ) = None
     wonder_datas: dict[str, SandboxV3WonderData] | None = None
     build_score_group_datas: dict[str, SandboxV3BuildScoreGroupData] | None = None
     basement_weather_weights: dict[str, int] | None = None
@@ -3009,8 +3031,12 @@ class SandboxV3Data(GameDataModel):
 class SandboxPermDetailData(GameDataModel):
     """clz_Torappu_SandboxPermDetailData"""
 
-    sandbox_v2: dict[str, SandboxV2Data] | None = Field(default=None, alias="SANDBOX_V2")
-    sandbox_v3: dict[str, SandboxV3Data] | None = Field(default=None, alias="SANDBOX_V3")
+    sandbox_v2: dict[str, SandboxV2Data] | None = Field(
+        default=None, alias="SANDBOX_V2"
+    )
+    sandbox_v3: dict[str, SandboxV3Data] | None = Field(
+        default=None, alias="SANDBOX_V3"
+    )
 
 
 class SandboxPermItemData(GameDataModel):

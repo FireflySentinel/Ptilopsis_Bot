@@ -53,7 +53,9 @@ class EnemyHandbookLevelInfoData(GameDataModel):
     attack: EnemyHandbookLevelInfoDataRangePair | None = None
     def_: EnemyHandbookLevelInfoDataRangePair | None = Field(default=None, alias="def")
     magic_res: EnemyHandbookLevelInfoDataRangePair | None = None
-    max_hp: EnemyHandbookLevelInfoDataRangePair | None = Field(default=None, alias="maxHP")
+    max_hp: EnemyHandbookLevelInfoDataRangePair | None = Field(
+        default=None, alias="maxHP"
+    )
     move_speed: EnemyHandbookLevelInfoDataRangePair | None = None
     attack_speed: EnemyHandbookLevelInfoDataRangePair | None = None
     enemy_damage_res: EnemyHandbookLevelInfoDataRangePair | None = None

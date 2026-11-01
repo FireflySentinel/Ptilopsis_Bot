@@ -771,7 +771,9 @@ class BuildingDataCustomDataInteractItem(GameDataModel):
     skin_id: str | None = None
 
 
-class BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData(GameDataModel):
+class BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData(
+    GameDataModel
+):
     """clz_Torappu_BuildingData_CustomData_DiyUISortTemplateListData_DiyUISortTemplateData"""
 
     name: str | None = None
@@ -787,7 +789,10 @@ class BuildingDataCustomDataDiyUISortTemplateListData(GameDataModel):
     expand_state: str | None = None
     default_template_index: int = 0
     default_template_order: str = "DESC"
-    templates: list[BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData] | None = None
+    templates: (
+        list[BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData]
+        | None
+    ) = None
 
 
 class BuildingDataCustomData(GameDataModel):
@@ -798,9 +803,13 @@ class BuildingDataCustomData(GameDataModel):
     groups: dict[str, BuildingDataCustomDataGroupData] | None = None
     types: dict[str, BuildingDataCustomDataFurnitureTypeData] | None = None
     sub_types: dict[str, BuildingDataCustomDataFurnitureSubTypeData] | None = None
-    default_furnitures: dict[str, list[BuildingDataCustomDataDormitoryDefaultFurnitureItem]] | None = None
+    default_furnitures: (
+        dict[str, list[BuildingDataCustomDataDormitoryDefaultFurnitureItem]] | None
+    ) = None
     interact_groups: dict[str, list[BuildingDataCustomDataInteractItem]] | None = None
-    diy_ui_sort_templates: dict[str, dict[str, BuildingDataCustomDataDiyUISortTemplateListData]] | None = Field(default=None, alias="diyUISortTemplates")
+    diy_ui_sort_templates: (
+        dict[str, dict[str, BuildingDataCustomDataDiyUISortTemplateListData]] | None
+    ) = Field(default=None, alias="diyUISortTemplates")
 
 
 class BuildingDataManufactFormulaUnlockRoom(GameDataModel):
@@ -983,7 +992,9 @@ class BuildingDataBuildingRoomTypeBuffSortData(GameDataModel):
 
     has_efficiency_sort: bool = False
     default_group_sort_id: int = 0
-    efficiency_target_dict: dict[str, BuildingDataBuildingRoomTypeBuffSortDataBuffGroupInfo] | None = None
+    efficiency_target_dict: (
+        dict[str, BuildingDataBuildingRoomTypeBuffSortDataBuffGroupInfo] | None
+    ) = None
 
 
 class BuildingDataTradingRoomSpecialOrderInfo(GameDataModel):
@@ -997,7 +1008,9 @@ class BuildingDataTradingRoomSpecialOrderInfo(GameDataModel):
 class BuildingDataTradingRoomInfoData(GameDataModel):
     """clz_Torappu_BuildingData_TradingRoomInfoData"""
 
-    trading_room_special_order_data: dict[str, BuildingDataTradingRoomSpecialOrderInfo] | None = None
+    trading_room_special_order_data: (
+        dict[str, BuildingDataTradingRoomSpecialOrderInfo] | None
+    ) = None
 
 
 class BuildingDataRecycleRoomOutputPoolData(GameDataModel):
@@ -1127,15 +1140,23 @@ class BuildingData(GameDataModel):
     workshop_target_des_dict: dict[str, str] | None = None
     trading_order_des_dict: dict[str, str] | None = None
     station_manage_const_data: BuildingDataStationManageConstData | None = None
-    station_manage_filter_infos: dict[int, BuildingDataStationManageFilterInfo] | None = None
+    station_manage_filter_infos: (
+        dict[int, BuildingDataStationManageFilterInfo] | None
+    ) = None
     music_data: BuildingDataMusicData | None = None
     emojis: list[str] | None = None
     category_names: dict[str, str] | None = None
     buff_sort_data: dict[str, BuildingDataBuildingRoomTypeBuffSortData] | None = None
     trading_room_info_data: BuildingDataTradingRoomInfoData | None = None
-    recycle_room_output_pool_datas: dict[str, BuildingDataRecycleRoomOutputPoolData] | None = None
-    recycle_room_output_pool_content_datas: dict[str, BuildingDataRecycleRoomOutputPoolContentData] | None = None
-    recycle_room_input_item_datas: dict[str, BuildingDataRecycleRoomInputItemData] | None = None
+    recycle_room_output_pool_datas: (
+        dict[str, BuildingDataRecycleRoomOutputPoolData] | None
+    ) = None
+    recycle_room_output_pool_content_datas: (
+        dict[str, BuildingDataRecycleRoomOutputPoolContentData] | None
+    ) = None
+    recycle_room_input_item_datas: (
+        dict[str, BuildingDataRecycleRoomInputItemData] | None
+    ) = None
     recycle_room_consts: BuildingDataRecycleRoomConsts | None = None
 
 

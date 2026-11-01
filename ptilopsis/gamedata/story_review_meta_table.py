@@ -185,7 +185,9 @@ class MiniActTrialData(GameDataModel):
 
     pre_show_days: int = 0
     rule_data_list: list[MiniActTrialDataRuleData] | None = None
-    mini_act_trial_data_map: dict[str, MiniActTrialDataMiniActTrialSingleData] | None = None
+    mini_act_trial_data_map: (
+        dict[str, MiniActTrialDataMiniActTrialSingleData] | None
+    ) = None
 
 
 class ActArchiveResDataPicArchiveResItemData(GameDataModel):
@@ -299,7 +301,9 @@ class ActArchiveResData(GameDataModel):
     news: dict[str, ActArchiveResDataNewsArchiveResItemData] | None = None
     landmarks: dict[str, ActArchiveResDataLandmarkArchiveResItemData] | None = None
     logs: dict[str, ActArchiveResDataLogArchiveResItemData] | None = None
-    challenge_books: dict[str, ActArchiveResDataChallengeBookArchiveResItemData] | None = None
+    challenge_books: (
+        dict[str, ActArchiveResDataChallengeBookArchiveResItemData] | None
+    ) = None
 
 
 class ActArchiveTimelineItemData(GameDataModel):

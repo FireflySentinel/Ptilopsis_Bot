@@ -286,7 +286,9 @@ class ShopClientData(GameDataModel):
     shop_unlock_dict: dict[str, str] | None = None
     extra_qc_shop_rule: list[str] | None = Field(default=None, alias="extraQCShopRule")
     rep_qc_shop_rule: list[str] | None = Field(default=None, alias="repQCShopRule")
-    shop_gp_data_dict: dict[str, ShopClientGPData] | None = Field(default=None, alias="shopGPDataDict")
+    shop_gp_data_dict: dict[str, ShopClientGPData] | None = Field(
+        default=None, alias="shopGPDataDict"
+    )
     tab_display_data: dict[str, ShopGPTabDisplayData] | None = None
     shop_monthly_sub_good_id: str | None = None
     ls: list[LMTGSShopSchedule] | None = None

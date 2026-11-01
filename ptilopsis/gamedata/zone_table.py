@@ -292,7 +292,9 @@ class ZoneRecordMissionData(GameDataModel):
 class ZoneMetaData(GameDataModel):
     """clz_Torappu_ZoneMetaData"""
 
-    zone_record_mission_data: dict[str, ZoneRecordMissionData] | None = Field(default=None, alias="ZoneRecordMissionData")
+    zone_record_mission_data: dict[str, ZoneRecordMissionData] | None = Field(
+        default=None, alias="ZoneRecordMissionData"
+    )
 
 
 class ZoneTable(GameDataModel):
