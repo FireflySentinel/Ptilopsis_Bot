@@ -6,6 +6,7 @@ from datetime import UTC, datetime, timedelta
 from email.parser import BytesParser
 from email.policy import HTTP
 from email.utils import format_datetime
+from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 from urllib.parse import parse_qs
@@ -45,6 +46,18 @@ def post_params(request: httpx2.Request) -> dict[str, str]:
         for part in message.iter_parts()
         if part.get_filename() is None
     }
+
+
+def multipart_names(request: httpx2.Request) -> list[str]:
+    """multipart 请求体里各字段(含文件)按发送顺序的名字。"""
+    content_type = request.headers["content-type"]
+    message = BytesParser(policy=HTTP).parsebytes(
+        f"Content-Type: {content_type}\r\n\r\n".encode() + request.content
+    )
+    return [
+        part.get_param("name", header="content-disposition")
+        for part in message.iter_parts()
+    ]
 
 
 class FakeMediaWiki:
@@ -270,6 +283,52 @@ async def test_post_is_multipart_so_large_edits_survive() -> None:
         "title": "页面",
         "text": text,
         "bot": "1",
+    }
+
+
+async def test_token_is_sent_after_text_and_summary() -> None:
+    # 请求体中途断开时服务器会处理收到的前半截:token 在正文前面就会存下半截页面,
+    # 所以 token 必须是最后一个字段
+    sent: list[httpx2.Request] = []
+
+    def handle(request: httpx2.Request) -> httpx2.Response:
+        sent.append(request)
+        return httpx2.Response(200, json={"edit": {"result": "Success"}})
+
+    async with httpx2.AsyncClient(transport=httpx2.MockTransport(handle)) as http:
+        wiki = Wiki(API, client=http)
+        wiki._csrf_token = "CSRF"
+        await wiki.edit(title="页面", text="正文", summary="update", minor=True)
+
+    names = multipart_names(sent[0])
+    assert names[-1] == "token"
+    assert names.index("text") < names.index("summary") < names.index("token")
+    assert post_params(sent[0])["token"] == "CSRF"
+
+
+async def test_upload_sends_token_after_file(tmp_path: Path) -> None:
+    sent: list[httpx2.Request] = []
+
+    def handle(request: httpx2.Request) -> httpx2.Response:
+        sent.append(request)
+        return httpx2.Response(200, json={"upload": {"result": "Success"}})
+
+    image = tmp_path / "a.png"
+    image.write_bytes(b"\x89PNG" + b"\0" * 64)
+    async with httpx2.AsyncClient(transport=httpx2.MockTransport(handle)) as http:
+        wiki = Wiki(API, client=http)
+        wiki._csrf_token = "CSRF"
+        await wiki.upload(str(image), "头像 a.png", comment="c")
+
+    names = multipart_names(sent[0])
+    assert names[-2:] == ["file", "token"]
+    assert post_params(sent[0]) == {
+        "format": "json",
+        "action": "upload",
+        "filename": "头像 a.png",
+        "ignorewarnings": "1",
+        "comment": "c",
+        "token": "CSRF",
     }
 
 

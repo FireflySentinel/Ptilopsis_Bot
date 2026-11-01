@@ -190,12 +190,17 @@ class Wiki:
             await self._pace_write(write_action)
             self._last_write = time.monotonic()
         form = {"format": "json", **data}
-        if "files" not in kwargs:
-            # 站点会整个丢掉超过约 50KB 的 urlencoded 请求体,api.php 收不到参数
-            # 就返回 200 的 HTML 帮助页;multipart 不受这个限制,统一走 multipart
-            kwargs["files"] = {k: (None, str(v)) for k, v in form.items()}
-            form = {}
-        resp = await self.client.post(self.api_url, data=form or None, **kwargs)
+        # 站点会整个丢掉超过约 50KB 的 urlencoded 请求体,api.php 收不到参数
+        # 就返回 200 的 HTML 帮助页;multipart 不受这个限制,统一走 multipart
+        token = form.pop("token", None)
+        parts: dict[str, Any] = {k: (None, str(v)) for k, v in form.items()}
+        parts |= kwargs.pop("files", {})
+        if token is not None:
+            # token 必须排在正文和文件之后(MediaWiki 文档的要求):请求体中途断开时
+            # 服务器会把收到的前半截当成完整请求处理,token 在前就会存下半截页面
+            # (摘要也丢了);放在最后,截断的请求缺 token,直接被拒
+            parts["token"] = (None, str(token))
+        resp = await self.client.post(self.api_url, files=parts, **kwargs)
         resp.raise_for_status()
         return resp.json()
 
