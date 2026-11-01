@@ -99,12 +99,28 @@ LEVEL_ATTRIBUTE_ROWS: tuple[tuple[str, str, str], ...] = (
     ("ground_bound_immune", "缚地抗性", "b"),
 )
 
+INDEXED_PAGE_ENEMIES = frozenset({"DC3", "HI02", "STU2", "OB19"})
+"""和别的敌人重名、页面名后面加上 ``(enemyIndex)`` 的图鉴条目。
+
+如 OB19 的 enemy_10262_dsjred 和 GAB 的 enemy_10128_fearpj 都叫“惘核”,
+它的页面是 ``“惘核”(OB19)``。页面里的 ``|名称=`` 仍是原名。
+"""
+
 Undefinable = UndefinableStr | UndefinableInt | UndefinableFloat | UndefinableBool
 """enemy_database 里"可能没定义"的一项属性。"""
 
 
 def _lookup(names: dict[str, str], key: str | None, default: str) -> str:
     return names.get(key, default) if key is not None else default
+
+
+def page_title(enemy: EnemyHandBookData) -> str:
+    """敌人页面的标题:一般是图鉴名,重名条目后面加 ``(enemyIndex)``。"""
+
+    name = (enemy.name or "").strip()
+    if enemy.enemy_index in INDEXED_PAGE_ENEMIES:
+        return f"{name}({enemy.enemy_index})"
+    return name
 
 
 def race_name_table(handbook: EnemyHandBookDataGroup) -> dict[str, str]:
@@ -388,7 +404,8 @@ async def run(
 
     for enemy in enemy_data_table.values():
         name = (enemy.name or "").strip()
-        if name in existing or name == "-" or enemy.hide_in_handbook:
+        title = page_title(enemy)
+        if title in existing or name == "-" or enemy.hide_in_handbook:
             continue
 
         # 先分析database中数据
@@ -430,9 +447,9 @@ async def run(
         }
 
         # 图鉴里可能有多个同名条目(如 enemy_1602_blksnk / blksnk2),只按第一个建页
-        existing.add(name)
+        existing.add(title)
         created = await wiki.create(
-            title=name,
+            title=title,
             text=content,
             summary="init",
             bot=None,
@@ -442,12 +459,12 @@ async def run(
         if not created:
             # 不在分类:敌人里却已存在,多半是重定向或同名的其它页面,要人工处理
             logger.warning(
-                f"Page {name} ({enemy.enemy_id}) already exists but is not "
+                f"Page {title} ({enemy.enemy_id}) already exists but is not "
                 "in 分类:敌人; skipped, resolve it manually and rerun"
             )
             continue
         await wiki.create(
-            title=name + "/spine",
+            title=title + "/spine",
             text=json.dumps(spine_content, indent=4, ensure_ascii=False),
             summary="init",
             bot=None,
@@ -455,7 +472,7 @@ async def run(
             contentmodel="json",
             protections=PAGE_PROTECTIONS,
         )
-        logger.info(f"Created: {name}.")
+        logger.info(f"Created: {title}.")
 
 
 @job
@@ -522,7 +539,7 @@ async def update_data(
             new_data["enemyLink"] += "(敌方)"
         if new_data["enemyIndex"] in override_list2:
             new_data["enemyLink"] += "(我方)"
-        if new_data["enemyIndex"] in ["DC3", "HI02", "STU2"]:
+        if new_data["enemyIndex"] in INDEXED_PAGE_ENEMIES:
             new_data["enemyLink"] += f'({new_data["enemyIndex"]})'
         # 种族
         if summary.race_tags:
