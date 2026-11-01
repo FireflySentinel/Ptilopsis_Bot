@@ -141,6 +141,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class OccPer(IntEnum):
@@ -172,8 +175,9 @@ class BuildingDataRoomType(IntEnum):
     WORKSHOP = 1024
     TRAINING = 2048
     PRIVATE = 4096
-    FUNCTIONAL = 3710
-    ALL = 8191
+    RECYCLE = 8192
+    FUNCTIONAL = 11902
+    ALL = 16383
 
 
 class ItemDropShopType(IntEnum):
@@ -326,9 +330,7 @@ class InventoryData(GameDataModel):
     uni_collection_info: dict[str, UniCollectionInfo] | None = None
     item_pack_infos: dict[str, ItemPackInfo] | None = None
     full_potential_characters: dict[str, FullPotentialCharacterInfo] | None = None
-    activity_potential_characters: dict[str, ActivityPotentialCharacterInfo] | None = (
-        None
-    )
+    activity_potential_characters: dict[str, ActivityPotentialCharacterInfo] | None = None
     favor_characters: dict[str, FavorCharacterInfo] | None = None
     item_shop_name_dict: dict[str, str] | None = None
 

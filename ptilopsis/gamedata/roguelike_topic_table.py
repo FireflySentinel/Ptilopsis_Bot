@@ -162,6 +162,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class RoguelikeGameMonthTaskClass(IntEnum):
@@ -534,6 +537,7 @@ class RoguelikeRewardExDropTagSrcType(IntEnum):
     STEP = 8
     GREED = 9
     GOLDEN_AGE = 10
+    ADVENTURER_EXTRA = 11
 
 
 class TipDataCategory(IntEnum):
@@ -807,6 +811,7 @@ class RoguelikeMoveScrapRangeType(IntEnum):
 
     RANGE = 0
     FULL_MAP = 1
+    FULL_ROW_COL = 2
 
 
 class SharedConstsDirection(IntEnum):
@@ -920,9 +925,7 @@ class RoguelikeTopicBasicData(GameDataModel):
     medal_group_id: str | None = None
     full_stored_time: int = 0
     line_text: str | None = None
-    home_entry_display_data: (
-        list[RoguelikeTopicBasicDataHomeEntryDisplayData] | None
-    ) = None
+    home_entry_display_data: list[RoguelikeTopicBasicDataHomeEntryDisplayData] | None = None
     module_types: list[str] | None = None
     config: RoguelikeTopicConfig | None = None
 
@@ -1111,9 +1114,7 @@ class RoguelikeTopicDifficulty(GameDataModel):
     can_unlock_item: bool = False
     do_month_task: bool = False
     rule_desc: str | None = None
-    rule_desc_replacements: list[RoguelikeTopicDifficultyRuleDescReplacement] | None = (
-        None
-    )
+    rule_desc_replacements: list[RoguelikeTopicDifficultyRuleDescReplacement] | None = None
     fail_title: str | None = None
     fail_image_id: str | None = None
     fail_force_desc: str | None = None
@@ -1482,16 +1483,10 @@ class RoguelikeTopicDetailConstPredefinedPlayerLevelData(GameDataModel):
 class RoguelikeTopicDetailConst(GameDataModel):
     """clz_Torappu_RoguelikeTopicDetailConst"""
 
-    player_level_table: dict[int, RoguelikeTopicDetailConstPlayerLevelData] | None = (
-        None
-    )
-    char_upgrade_table: dict[int, RoguelikeTopicDetailConstCharUpgradeData] | None = (
-        None
-    )
+    player_level_table: dict[int, RoguelikeTopicDetailConstPlayerLevelData] | None = None
+    char_upgrade_table: dict[int, RoguelikeTopicDetailConstCharUpgradeData] | None = None
     difficulty_upgrade_relic_desc_table: dict[int, str] | None = None
-    predefined_level_table: (
-        dict[str, RoguelikeTopicDetailConstPredefinedPlayerLevelData] | None
-    ) = None
+    predefined_level_table: dict[str, RoguelikeTopicDetailConstPredefinedPlayerLevelData] | None = None
     token_bp_id: str | None = None
     token_outer_buff_id: str | None = None
     sp_operator_locked_message: str | None = None
@@ -2144,20 +2139,14 @@ class RoguelikeActivitySeedModeDataRoguelikeActivitySeedModeConstData(GameDataMo
 class RoguelikeActivitySeedModeData(GameDataModel):
     """clz_Torappu_RoguelikeActivitySeedModeData"""
 
-    official_seed_data_list: (
-        list[RoguelikeActivitySeedModeDataRoguelikeActivityOfficialSeedData] | None
-    ) = None
-    const_data: (
-        RoguelikeActivitySeedModeDataRoguelikeActivitySeedModeConstData | None
-    ) = None
+    official_seed_data_list: list[RoguelikeActivitySeedModeDataRoguelikeActivityOfficialSeedData] | None = None
+    const_data: RoguelikeActivitySeedModeDataRoguelikeActivitySeedModeConstData | None = None
 
 
 class RoguelikeActivityTable(GameDataModel):
     """clz_Torappu_RoguelikeActivityTable"""
 
-    seed_mode: dict[str, RoguelikeActivitySeedModeData] | None = Field(
-        default=None, alias="SEED_MODE"
-    )
+    seed_mode: dict[str, RoguelikeActivitySeedModeData] | None = Field(default=None, alias="SEED_MODE")
 
 
 class RoguelikeActivityData(GameDataModel):
@@ -2209,18 +2198,14 @@ class RoguelikeTopicDetail(GameDataModel):
     capsule_dict: dict[str, RoguelikeTopicCapsule] | None = None
     endings: dict[str, RoguelikeGameEndingData] | None = None
     fail_endings: dict[str, RoguelikeGameFailEndingData] | None = None
-    battle_summery_descriptions: (
-        dict[str, RoguelikeBattleSummeryDescriptionData] | None
-    ) = None
+    battle_summery_descriptions: dict[str, RoguelikeBattleSummeryDescriptionData] | None = None
     battle_loading_tips: list[TipData] | None = None
     items: dict[str, RoguelikeGameItemData] | None = None
     band_ref: dict[str, RoguelikeBandRefData] | None = None
     ending_detail_list: list[RoguelikeEndingDetailText] | None = None
     ending_relic_detail_list: list[RoguelikeEndingRelicDetailText] | None = None
     treasures: dict[str, list[RoguelikeGameTreasureData]] | None = None
-    difficulty_upgrade_relic_groups: (
-        dict[str, RoguelikeDifficultyUpgradeRelicGroupData] | None
-    ) = None
+    difficulty_upgrade_relic_groups: dict[str, RoguelikeDifficultyUpgradeRelicGroupData] | None = None
     styles: dict[str, RoguelikePredefinedStyleData] | None = None
     style_config: RoguelikePredefinedConstStyleData | None = None
     explore_tools: dict[str, RoguelikeGameExploreToolData] | None = None
@@ -2350,9 +2335,7 @@ class RoguelikeChaosModuleData(GameDataModel):
 
     chaos_datas: dict[str, RoguelikeChaosData] | None = None
     chaos_ranges: list[RoguelikeChaosRangeData] | None = None
-    level_info_dict: dict[str, dict[int, RoguelikeChaosPredefineLevelInfo]] | None = (
-        None
-    )
+    level_info_dict: dict[str, dict[int, RoguelikeChaosPredefineLevelInfo]] | None = None
     module_consts: RoguelikeChaosModuleConsts | None = None
 
 
@@ -2788,6 +2771,11 @@ class RoguelikeGridZoneModuleConsts(GameDataModel):
 
     savage_bubble: str | None = None
     secret_zone_disable_buff: str | None = None
+    shadvr_trap_ids: list[str] | None = None
+    shadvr_first_die_trap_ids: list[str] | None = None
+    shadvr_alive_event_id: str | None = None
+    shadvr_die_event_id: str | None = None
+    shadvr_final_relic_id: str | None = None
     max_banner_difficulty: int = 0
     focus_view_boss_hint_stage_id: dict[str, bool] | None = None
 
@@ -2795,12 +2783,8 @@ class RoguelikeGridZoneModuleConsts(GameDataModel):
 class RoguelikeGridZoneModuleData(GameDataModel):
     """clz_Torappu_RoguelikeGridZoneModuleData"""
 
-    zone_mission_banner_data: dict[str, RoguelikeGridZoneMissionBannerData] | None = (
-        None
-    )
-    scrap_side_bar_step_zero_hint_banner_data: (
-        dict[str, RoguelikeGridZoneFocusViewHintData] | None
-    ) = None
+    zone_mission_banner_data: dict[str, RoguelikeGridZoneMissionBannerData] | None = None
+    scrap_side_bar_step_zero_hint_banner_data: dict[str, RoguelikeGridZoneFocusViewHintData] | None = None
     buoy_item_datas: dict[str, RoguelikeBuoyItemData] | None = None
     module_consts: RoguelikeGridZoneModuleConsts | None = None
 
@@ -2823,6 +2807,7 @@ class RoguelikeScrapMoveData(GameDataModel):
     node: list[str] | None = None
     step: int = 0
     is_random_move: bool = False
+    node_change_target_type: str = "NONE"
     scrap_id: str | None = None
     scrap_desc: str | None = None
     sell_price: int = 0
@@ -3202,9 +3187,7 @@ class RL03CustomizeData(GameDataModel):
     developments: dict[str, RL03Development] | None = None
     developments_tokens: dict[str, RoguelikeTopicDevToken] | None = None
     development_raw_text_group: list[RL03DevRawTextBuffGroup] | None = None
-    developments_difficulty_node_infos: dict[str, RL03DevDifficultyNodeInfo] | None = (
-        None
-    )
+    developments_difficulty_node_infos: dict[str, RL03DevDifficultyNodeInfo] | None = None
     ending_text: RL03EndingText | None = None
     difficulties: list[RL03DifficultyExt] | None = None
 
@@ -3262,9 +3245,7 @@ class RoguelikeCommonDevelopmentData(GameDataModel):
     developments: dict[str, RoguelikeCommonDevelopment] | None = None
     developments_tokens: dict[str, RoguelikeTopicDevToken] | None = None
     development_raw_text_group: list[RoguelikeCommonDevRawTextBuffGroup] | None = None
-    developments_difficulty_node_infos: (
-        dict[str, RoguelikeCommonDevDifficultyNodeInfo] | None
-    ) = None
+    developments_difficulty_node_infos: dict[str, RoguelikeCommonDevDifficultyNodeInfo] | None = None
 
 
 class RL04DifficultyExt(GameDataModel):

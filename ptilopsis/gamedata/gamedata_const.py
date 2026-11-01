@@ -111,6 +111,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class SubProfessionAttackType(IntEnum):
@@ -210,29 +213,17 @@ class GameDataConsts(GameDataModel):
     one_diamond_ap: int = 0
     char_rotation_preset_max_cnt: int = 0
     char_rotation_skin_list_max_cnt: int = 0
-    default_cr_preset_char_id: str | None = Field(
-        default=None, alias="defaultCRPresetCharId"
-    )
-    default_cr_preset_char_skin_id: str | None = Field(
-        default=None, alias="defaultCRPresetCharSkinId"
-    )
-    default_cr_preset_bg_id: str | None = Field(
-        default=None, alias="defaultCRPresetBGId"
-    )
-    default_cr_preset_theme_id: str | None = Field(
-        default=None, alias="defaultCRPresetThemeId"
-    )
-    default_cr_preset_name: str | None = Field(
-        default=None, alias="defaultCRPresetName"
-    )
+    default_cr_preset_char_id: str | None = Field(default=None, alias="defaultCRPresetCharId")
+    default_cr_preset_char_skin_id: str | None = Field(default=None, alias="defaultCRPresetCharSkinId")
+    default_cr_preset_bg_id: str | None = Field(default=None, alias="defaultCRPresetBGId")
+    default_cr_preset_theme_id: str | None = Field(default=None, alias="defaultCRPresetThemeId")
+    default_cr_preset_name: str | None = Field(default=None, alias="defaultCRPresetName")
     char_rotation_preset_track_ts: int = 0
     uniequip_archive_sys_track_ts: int = 0
     manufact_prompt_time: int = 0
     main_guide_actived_stage_id: str | None = None
     rich_text_styles: dict[str, str] | None = None
-    char_assist_refresh_time: list[GameDataConstsCharAssistRefreshTimeState] | None = (
-        None
-    )
+    char_assist_refresh_time: list[GameDataConstsCharAssistRefreshTimeState] | None = None
     normal_recruit_locked_string: list[str] | None = None
     common_potential_lvl_up_count: int = 0
     weekly_override_desc: str | None = None
@@ -267,9 +258,7 @@ class GameDataConsts(GameDataModel):
     tso: int = Field(default=0, alias="TSO")
     is_dyn_illust_enabled: bool = False
     is_dyn_illust_start_enabled: bool = False
-    is_classic_qc_shop_enabled: bool = Field(
-        default=False, alias="isClassicQCShopEnabled"
-    )
+    is_classic_qc_shop_enabled: bool = Field(default=False, alias="isClassicQCShopEnabled")
     is_roguelike_topic_func_enabled: bool = False
     is_sandbox_perm_func_enabled: bool = False
     is_roguelike_avg_achieve_func_enabled: bool = False
@@ -302,9 +291,9 @@ class GameDataConsts(GameDataModel):
     birthday_setting_show_stage_id: str | None = None
     is_birthday_func_enabled: bool = False
     is_so_char_enabled: bool = False
-    avg_reader_mode_default_setting: (
-        GameDataConstsAVGReaderModeDefaultSetting | None
-    ) = None
+    avg_reader_mode_default_setting: GameDataConstsAVGReaderModeDefaultSetting | None = None
+    friend_add_uid_limit: int = 0
+    friend_url_format: str | None = None
 
 
 # root_type clz_Torappu_GameDataConsts

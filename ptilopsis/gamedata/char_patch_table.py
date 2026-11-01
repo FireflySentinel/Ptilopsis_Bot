@@ -165,6 +165,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class CharacterDataPotentialRankTypeEnum(IntEnum):
@@ -231,7 +234,8 @@ class AbnormalCombo(IntEnum):
 
     SLEEPING = 0
     SHELTERING = 1
-    E_NUM = 2
+    ISOLATE = 2
+    E_NUM = 3
 
 
 class AttributeType(IntEnum):
@@ -363,6 +367,7 @@ class AttributesData(GameDataModel):
     taunt_level: int = 0
     mass_level: int = 0
     base_force_level: int = 0
+    block_volume: int = 0
     stun_immune: bool = False
     silence_immune: bool = False
     sleep_immune: bool = False
@@ -495,6 +500,7 @@ class AttributesDeltaData(GameDataModel):
     taunt_level: int = 0
     mass_level: int = 0
     base_force_level: int = 0
+    block_volume: int = 0
     stun_immune: bool = False
     silence_immune: bool = False
     sleep_immune: bool = False

@@ -84,7 +84,10 @@ class ActivityType(IntEnum):
     TYPE_ACT53SIDE = 64
     TYPE_ACT54SIDE = 65
     ACT_DP = 66
-    ENUM = 67
+    REWARD_ONLY = 67
+    AUTOCHESS = 68
+    TYPE_ACT55SIDE = 69
+    ENUM = 70
 
 
 class ActivityDisplayType(IntEnum):
@@ -127,6 +130,7 @@ class MissionType(IntEnum):
     RETRO = 9
     SPECIAL_OPERATOR = 10
     SPECIAL_OPERATOR_WEEKLY = 11
+    GUIDE_V3 = 12
 
 
 class MissionItemBgType(IntEnum):
@@ -235,6 +239,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class VersusCheckInDataTasteType(IntEnum):
@@ -304,6 +311,19 @@ class PlayerSideMask(IntEnum):
     ALL = 0
     SIDE_A = 2
     SIDE_B = 4
+    SIDE_C = 8
+    SIDE_D = 16
+    NONE = 255
+
+
+class MapLayerMask(IntEnum):
+    """enum__Torappu_MapLayerMask"""
+
+    ALL = 0
+    LAYER_A = 2
+    LAYER_B = 4
+    LAYER_C = 8
+    LAYER_D = 16
     NONE = 255
 
 
@@ -711,7 +731,8 @@ class ActArcadeDataSubModeType(IntEnum):
     DRAW = 1
     LINE = 2
     CAR = 3
-    E_NUM = 4
+    FISH = 4
+    E_NUM = 5
 
 
 class ActArcadeDataBadgeType(IntEnum):
@@ -935,23 +956,50 @@ class ActAutoChessModeDifficultyType(IntEnum):
     NORMAL = 2
     HARD = 3
     ABYSS = 4
+    FAST = 5
 
 
-class AutoChessChessType(IntEnum):
-    """enum__Torappu_AutoChessChessType"""
+class ActAutoChessModeGroupType(IntEnum):
+    """enum__Torappu_ActAutoChessModeGroupType"""
+
+    GROUP_MULTI = 0
+    GROUP_ROOM = 1
+    GROUP_SINGLE = 2
+    GROUP_FAST = 3
+    GROUP_OFFSEASON = 4
+
+
+class ActAutoChessMultiModeSubType(IntEnum):
+    """enum__Torappu_ActAutoChessMultiModeSubType"""
+
+    NONE = 0
+    SOLO = 1
+    TEAM = 2
+
+
+class UITemplateShopTemplateShopDataTShopType(IntEnum):
+    """enum__Torappu_UI_TemplateShop_TemplateShopData_TShopType"""
 
     NORMAL = 0
-    DIY = 1
-    PRESET = 2
+    SHOP_RARITY_GROUP = 1
+    SHOP_PERIOD_UNLOCK = 2
+    SHOP_MILESTONE_GROUP = 3
+    SHOP_PORTRAIT_GROUP = 4
 
 
-class AutoChessItemType(IntEnum):
-    """enum__Torappu_AutoChessItemType"""
+class UITemplateShopTemplateShopDataGoodType(IntEnum):
+    """enum__Torappu_UI_TemplateShop_TemplateShopData_GoodType"""
 
-    CHAR = 0
-    EQUIP = 1
-    MAGIC = 2
-    TOKEN = 3
+    NORMAL = 0
+    PROGRESS = 1
+
+
+class AutoChessBandType(IntEnum):
+    """enum__Torappu_AutoChessBandType"""
+
+    NONE = 0
+    GENERAL = 1
+    BONDRELEVANT = 2
 
 
 class ActAutoChessBondActiveConditionType(IntEnum):
@@ -971,6 +1019,14 @@ class ActAutoChessBondActiveType(IntEnum):
     MANI = 2
 
 
+class ActAutoChessBondPhaseType(IntEnum):
+    """enum__Torappu_ActAutoChessBondPhaseType"""
+
+    NONE = 0
+    PEOPLE_COUNT = 1
+    STACK_COUNT = 2
+
+
 class AutoChessEffectType(IntEnum):
     """enum__Torappu_AutoChessEffectType"""
 
@@ -986,6 +1042,7 @@ class AutoChessEffectType(IntEnum):
     ENEMY_GAIN = 9
     BUFF_GAIN = 10
     GARRISON = 11
+    BAND_SKILL = 12
 
 
 class AutoChessEffectCounterType(IntEnum):
@@ -999,16 +1056,38 @@ class AutoChessEffectCounterType(IntEnum):
     COIN_JAR = 5
 
 
-class AutoChessCountType(IntEnum):
-    """enum__Torappu_AutoChessCountType"""
+class AutoChessSkillType(IntEnum):
+    """enum__Torappu_AutoChessSkillType"""
 
     NONE = 0
-    BATTLE_LAYER = 1
-    COUNTING = 2
-    PROFESSIONS = 3
-    GROUPS = 4
-    LEVEL = 5
-    PURCHASE = 6
+    PASSIVE = 1
+    ACTIVE = 2
+
+
+class AutoChessSkillAvailType(IntEnum):
+    """enum__Torappu_AutoChessSkillAvailType"""
+
+    DEFAULT = 0
+    ROUND_RESET = 1
+    ALL_LIMIT = 2
+    COOLDOWN = 3
+
+
+class AutoChessChessType(IntEnum):
+    """enum__Torappu_AutoChessChessType"""
+
+    NORMAL = 0
+    DIY = 1
+    PRESET = 2
+
+
+class AutoChessItemType(IntEnum):
+    """enum__Torappu_AutoChessItemType"""
+
+    CHAR = 0
+    EQUIP = 1
+    MAGIC = 2
+    TOKEN = 3
 
 
 class AutoChessEffectChoiceType(IntEnum):
@@ -1019,6 +1098,22 @@ class AutoChessEffectChoiceType(IntEnum):
     BOUNTY_HUNT = 2
     BUFF_SELECT = 3
     PERSONAL_CHOOSE = 4
+    SKILL_CHANGE = 5
+
+
+class AutoChessSelectionType(IntEnum):
+    """enum__Torappu_AutoChessSelectionType"""
+
+    ROBIN = 0
+    SHARED = 1
+
+
+class AutoChessBondType(IntEnum):
+    """enum__Torappu_AutoChessBondType"""
+
+    NONE = 0
+    REGULAR = 1
+    SEASON = 2
 
 
 class ArkdexModeType(IntEnum):
@@ -1336,12 +1431,20 @@ class Anniv7thDisplayNodeType(IntEnum):
     SIGN = 3
 
 
-class AutoChessBondType(IntEnum):
-    """enum__Torappu_AutoChessBondType"""
+class AutoChessPeriodType(IntEnum):
+    """enum__Torappu_AutoChessPeriodType"""
+
+    SEASON = 0
+    OFFSEASON = 1
+    SUSPENSION = 2
+
+
+class AutoChessContentType(IntEnum):
+    """enum__Torappu_AutoChessContentType"""
 
     NONE = 0
-    REGULAR = 1
-    SEASON = 2
+    BASIC = 1
+    EXPAND = 2
 
 
 class AutoChessPrepareStepType(IntEnum):
@@ -1350,7 +1453,8 @@ class AutoChessPrepareStepType(IntEnum):
     NONE = 0
     INFO_CHECK = 1
     BAND_CHECK = 2
-    BATTLE_CHECK = 3
+    CUSTOM_CHECK = 3
+    BATTLE_CHECK = 4
 
 
 class AutoChessShopTokenDisplayType(IntEnum):
@@ -1363,19 +1467,21 @@ class AutoChessShopTokenDisplayType(IntEnum):
 class AutoChessSkillTriggerType(IntEnum):
     """enum__Torappu_AutoChessSkillTriggerType"""
 
-    DEFAULT = 0
-    ALWAYS = 1
-    SEARCH = 2
-    MLYSS_WTRMAN = 3
-    MARCILS2 = 4
-    TRY_SEARCH_ENEMY_SKILL = 5
-    TRY_SEARCH_ALLY_SKILL = 6
-    CUSTOM_RANGE_SEARCH_ENEMY = 7
-    CUSTOM_RANGE_SEARCH_ALLY = 8
-    GDGLOW_SKILL_2 = 9
-    ACT_DEFAULT = 10
-    AUTO_STOP = 11
-    TAKE_DAMAGE = 12
+    ALWAYS = 0
+    ON_TAKE_DAMAGE = 1
+    ATTACK_RANGE_ENEMY = 2
+    SKILL_RANGE_ENEMY = 3
+    CUSTOM_RANGE_ENEMY = 4
+    ATTACK_RANGE_ALLY = 5
+    SKILL_RANGE_ALLY = 6
+    CUSTOM_RANGE_ALLY = 7
+    COMBAT_OR_ATTACK = 8
+    GLOBAL_RANGE_ENEMY = 9
+    AUTO_STOP = 10
+    MLYSS_S = 11
+    MARCIL_S2 = 12
+    APHRIS_S3 = 13
+    INVALID_IN_SKILL = 14
 
 
 class AutoChessBroadcastType(IntEnum):
@@ -1388,6 +1494,18 @@ class AutoChessBroadcastType(IntEnum):
     CHAR_DAMAGE = 4
     CHAR_GIFT = 5
     BOND_EFFECT = 6
+    GARRISON_EXECUTED = 7
+    PERFECT_BATTLE = 8
+    SKILL_EXECUTED = 9
+    RESTORE_HEALTH = 10
+    BAND_SKILL_FAILED = 11
+
+
+class AutoChessSkinType(IntEnum):
+    """enum__Torappu_AutoChessSkinType"""
+
+    ACTIVITY = 0
+    SPECIAL = 1
 
 
 class ItemRarity(IntEnum):
@@ -1402,6 +1520,68 @@ class ItemRarity(IntEnum):
     E_NUM = 6
 
 
+class AutoChessSkinVoicePackType(IntEnum):
+    """enum__Torappu_AutoChessSkinVoicePackType"""
+
+    NONE = 0
+    SINGLE = 1
+    MULTI = 2
+
+
+class CharWordShowType(IntEnum):
+    """enum__Torappu_CharWordShowType"""
+
+    HOME_SHOW = 0
+    HOME_PLACE = 1
+    HOME_WAIT = 2
+    GACHA = 3
+    EVOLVE_ONE = 4
+    EVOLVE_TWO = 5
+    FOUR_STAR = 6
+    THREE_STAR = 7
+    TWO_STAR = 8
+    LOSE = 9
+    LEVEL_UP = 10
+    SQUAD = 11
+    SQUAD_FIRST = 12
+    BATTLE_START = 13
+    BATTLE_FACE_ENEMY = 14
+    BATTLE_SELECT = 15
+    BATTLE_PLACE = 16
+    BATTLE_SKILL_1 = 17
+    BATTLE_SKILL_2 = 18
+    BATTLE_SKILL_3 = 19
+    BATTLE_SKILL_4 = 20
+    BUILDING_PLACE = 21
+    BUILDING_DRAGGING = 22
+    BUILDING_FAVOR_BUBBLE = 23
+    BUILDING_TOUCHING = 24
+    LOADING_PANEL = 25
+    BIRTHDAY = 26
+    NEW_YEAR = 27
+    VALENT_DAY = 28
+    DRAGON_BOAT_FESTIVAL = 29
+    HALLOWEEN_DAY = 30
+    CHRISMATS_DAY = 31
+    GREETING = 32
+    ANNIVERSARY = 33
+    UNUSED = 34
+    AUTOCHESS_GAME_START = 35
+    AUTOCHESS_REST_NO_HP_LOSS = 36
+    AUTOCHESS_REST_HP_LOSS = 37
+    AUTOCHESS_REST_BOSS = 38
+    AUTOCHESS_REST_HIDDEN_BOSS = 39
+    AUTOCHESS_SAME_OPERATOR = 40
+    AUTOCHESS_BUY_OPERATOR_LOW = 41
+    AUTOCHESS_BUY_OPERATOR_HIGH = 42
+    AUTOCHESS_SHOP_UPGRADE = 43
+    AUTOCHESS_COUNTDOWN = 44
+    AUTOCHESS_MERGE_TRIPLE = 45
+    AUTOCHESS_ALLIANCE_LEVEL = 46
+    AUTOCHESS_FREEZE = 47
+    E_ALL = 48
+
+
 class TemplateMissionBigRewardType(IntEnum):
     """enum__Torappu_TemplateMissionBigRewardType"""
 
@@ -1410,6 +1590,7 @@ class TemplateMissionBigRewardType(IntEnum):
     CUSTOM = 2
     PIC_REWARD = 3
     SKIN_REWARD = 4
+    POINT_REWARD_LIST = 5
 
 
 class TemplateMissionTitleType(IntEnum):
@@ -2040,6 +2221,7 @@ class RuneDataSelector(GameDataModel):
     profession_mask: str = "NONE"
     buildable_mask: str = "NONE"
     player_side_mask: str = "ALL"
+    map_layer_mask: str = "ALL"
     side_type: str = "NONE"
     char_id_filter: list[str] | None = None
     char_id_exclude_filter: list[str] | None = None
@@ -2450,16 +2632,10 @@ class Act13SideData(GameDataModel):
     const_data: Act13SideDataConstData | None = None
     org_data_map: dict[str, Act13SideDataOrgData] | None = None
     principal_data_map: dict[str, Act13SideDataPrincipalData] | None = None
-    long_term_mission_data_map: dict[str, Act13SideDataLongTermMissionData] | None = (
-        None
-    )
+    long_term_mission_data_map: dict[str, Act13SideDataLongTermMissionData] | None = None
     daily_mission_data_list: list[Act13SideDataDailyMissionData] | None = None
-    daily_reward_group_data_map: (
-        dict[str, Act13SideDataDailyMissionRewardGroupData] | None
-    ) = None
-    archive_item_unlock_data: dict[str, Act13SideDataArchiveItemUnlockData] | None = (
-        None
-    )
+    daily_reward_group_data_map: dict[str, Act13SideDataDailyMissionRewardGroupData] | None = None
+    archive_item_unlock_data: dict[str, Act13SideDataArchiveItemUnlockData] | None = None
     hidden_area_data: dict[str, ActivityTableActivityHiddenAreaData] | None = None
     zone_addtion_data_map: dict[str, Act13SideDataZoneAdditionData] | None = None
 
@@ -2673,9 +2849,7 @@ class Act17sideData(GameDataModel):
     tech_node_data_map: dict[str, Act17sideDataTechNodeData] | None = None
     choice_node_data_map: dict[str, Act17sideDataChoiceNodeData] | None = None
     event_data_map: dict[str, Act17sideDataEventData] | None = None
-    archive_item_unlock_data_map: (
-        dict[str, Act17sideDataArchiveItemUnlockData] | None
-    ) = None
+    archive_item_unlock_data_map: dict[str, Act17sideDataArchiveItemUnlockData] | None = None
     tech_tree_data_map: dict[str, Act17sideDataTechTreeData] | None = None
     tech_tree_branch_data_map: dict[str, Act17sideDataTechTreeBranchData] | None = None
     mainline_chapter_data_map: dict[str, Act17sideDataMainlineChapterData] | None = None
@@ -2833,9 +3007,7 @@ class ActivityTableCustomUnlockCond(GameDataModel):
 class ActivityRoguelikeData(GameDataModel):
     """clz_Torappu_ActivityRoguelikeData"""
 
-    out_buff_infos: dict[str, ActivityRoguelikeDataOuterBuffUnlockInfoData] | None = (
-        None
-    )
+    out_buff_infos: dict[str, ActivityRoguelikeDataOuterBuffUnlockInfoData] | None = None
     ap_supply_out_of_date_dict: dict[str, int] | None = None
     outer_buff_token: str | None = None
     shop_token: str | None = None
@@ -2937,17 +3109,11 @@ class ActivityInterlockDataFinalStageProgressData(GameDataModel):
 class ActivityInterlockData(GameDataModel):
     """clz_Torappu_ActivityInterlockData"""
 
-    stage_addition_info_map: (
-        dict[str, ActivityInterlockDataStageAdditionData] | None
-    ) = None
-    treasure_monster_map: dict[str, ActivityInterlockDataTreasureMonsterData] | None = (
-        None
-    )
+    stage_addition_info_map: dict[str, ActivityInterlockDataStageAdditionData] | None = None
+    treasure_monster_map: dict[str, ActivityInterlockDataTreasureMonsterData] | None = None
     special_assist_data: SharedCharData | None = None
     mile_stone_item_list: list[ActivityInterlockDataMileStoneItemInfo] | None = None
-    final_stage_progress_map: (
-        dict[str, list[ActivityInterlockDataFinalStageProgressData]] | None
-    ) = None
+    final_stage_progress_map: dict[str, list[ActivityInterlockDataFinalStageProgressData]] | None = None
 
 
 class ActivityBossRushDataZoneAdditionData(GameDataModel):
@@ -3068,24 +3234,14 @@ class ActivityBossRushDataConstData(GameDataModel):
 class ActivityBossRushData(GameDataModel):
     """clz_Torappu_ActivityBossRushData"""
 
-    zone_addition_data_map: dict[str, ActivityBossRushDataZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, ActivityBossRushDataZoneAdditionData] | None = None
     stage_group_map: dict[str, ActivityBossRushDataBossRushStageGroupData] | None = None
-    stage_addition_data_map: (
-        dict[str, ActivityBossRushDataBossRushStageAdditionData] | None
-    ) = None
-    stage_drop_data_map: (
-        dict[str, dict[int, ActivityBossRushDataBossRushDropInfo]] | None
-    ) = None
-    mission_addition_data_map: (
-        dict[str, ActivityBossRushDataBossRushMissionAdditionData] | None
-    ) = None
+    stage_addition_data_map: dict[str, ActivityBossRushDataBossRushStageAdditionData] | None = None
+    stage_drop_data_map: dict[str, dict[int, ActivityBossRushDataBossRushDropInfo]] | None = None
+    mission_addition_data_map: dict[str, ActivityBossRushDataBossRushMissionAdditionData] | None = None
     team_data_map: dict[str, ActivityBossRushDataBossRushTeamData] | None = None
     relic_list: list[ActivityBossRushDataRelicData] | None = None
-    relic_level_info_data_map: (
-        dict[str, ActivityBossRushDataRelicLevelInfoData] | None
-    ) = None
+    relic_level_info_data_map: dict[str, ActivityBossRushDataRelicLevelInfoData] | None = None
     mile_stone_list: list[ActivityBossRushDataBossRushMileStoneData] | None = None
     best_wave_rune_list: list[RuneTablePackedRuneData] | None = None
     const_data: ActivityBossRushDataConstData | None = None
@@ -3197,9 +3353,7 @@ class ActivityMainlineBuffDataConstData(GameDataModel):
 class ActivityMainlineBuffData(GameDataModel):
     """clz_Torappu_ActivityMainlineBuffData"""
 
-    mission_group_list: dict[str, ActivityMainlineBuffDataMissionGroupData] | None = (
-        None
-    )
+    mission_group_list: dict[str, ActivityMainlineBuffDataMissionGroupData] | None = None
     period_data_list: list[ActivityMainlineBuffDataPeriodData] | None = None
     ap_supply_out_of_date_dict: dict[str, int] | None = None
     const_data: ActivityMainlineBuffDataConstData | None = None
@@ -3387,12 +3541,8 @@ class Act24SideData(GameDataModel):
     tool_data_list: dict[str, Act24SideDataToolData] | None = None
     meal_data_list: dict[str, Act24SideDataMealData] | None = None
     melding_dict: dict[str, Act24SideDataMeldingItemData] | None = None
-    melding_gacha_box_data_list: dict[str, Act24SideDataMeldingGachaBoxData] | None = (
-        None
-    )
-    melding_gacha_box_good_data_map: (
-        dict[str, list[Act24SideDataMeldingGachaBoxGoodData]] | None
-    ) = None
+    melding_gacha_box_data_list: dict[str, Act24SideDataMeldingGachaBoxData] | None = None
+    melding_gacha_box_good_data_map: dict[str, list[Act24SideDataMeldingGachaBoxGoodData]] | None = None
     meal_welcome_txt_data_map: dict[str, str] | None = None
     zone_addition_data_map: dict[str, Act24SideDataZoneAdditionData] | None = None
     quest_stage_list: list[QuestStageData] | None = None
@@ -3622,9 +3772,7 @@ class Act27SideDataAct27SideConstData(GameDataModel):
     stage_id: str | None = None
     stage_code: str | None = None
     purchase_price_name: list[str] | None = None
-    furni_reward_list: list[Act27SideDataAct27SideMileStoneFurniRewardData] | None = (
-        None
-    )
+    furni_reward_list: list[Act27SideDataAct27SideMileStoneFurniRewardData] | None = None
     prize_text: str | None = None
     player_shop_id: str | None = None
     milestone_point_name: str | None = None
@@ -3648,9 +3796,7 @@ class Act27SideData(GameDataModel):
     shop_data_map: dict[str, Act27SideDataAct27SideShopData] | None = None
     inquire_data_list: list[Act27SideDataAct27SideInquireData] | None = None
     dyn_entry_switch_data: list[Act27SideDataAct27SideDynEntrySwitchData] | None = None
-    zone_addition_data_map: dict[str, Act27SideDataAct27sideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act27SideDataAct27sideZoneAdditionData] | None = None
     const_data: Act27SideDataAct27SideConstData | None = None
 
 
@@ -3775,14 +3921,10 @@ class Act42D0Data(GameDataModel):
 
     area_info_data: dict[str, Act42D0DataAct42D0AreaInfoData] | None = None
     stage_info_data: dict[str, Act42D0DataAct42D0StageInfoData] | None = None
-    effect_group_info_data: dict[str, Act42D0DataAct42D0EffectGroupInfoData] | None = (
-        None
-    )
+    effect_group_info_data: dict[str, Act42D0DataAct42D0EffectGroupInfoData] | None = None
     effect_info_data: dict[str, Act42D0DataAct42D0EffectInfoData] | None = None
     challenge_info_data: dict[str, Act42D0DataAct42D0ChallengeInfoData] | None = None
-    stage_rating_info_data: dict[str, Act42D0DataAct42D0StageRatingInfoData] | None = (
-        None
-    )
+    stage_rating_info_data: dict[str, Act42D0DataAct42D0StageRatingInfoData] | None = None
     milestone_data: list[Act42D0DataAct42D0MilestoneData] | None = None
     const_data: Act42D0DataAct42D0ConstData | None = None
     track_point_period_data: list[int] | None = None
@@ -3926,21 +4068,15 @@ class Act29SideData(GameDataModel):
 
     frag_data_map: dict[str, Act29SideDataAct29SideFragData] | None = None
     orche_data_map: dict[str, Act29SideDataAct29SideOrcheData] | None = None
-    product_group_data_map: dict[str, Act29SideDataAct29SideProductGroupData] | None = (
-        None
-    )
+    product_group_data_map: dict[str, Act29SideDataAct29SideProductGroupData] | None = None
     product_data_map: dict[str, Act29SideDataAct29SideProductData] | None = None
     form_data_map: dict[str, Act29SideDataAct29SideFormData] | None = None
-    invest_result_data_map: dict[str, Act29SideDataAct29SideInvestResultData] | None = (
-        None
-    )
+    invest_result_data_map: dict[str, Act29SideDataAct29SideInvestResultData] | None = None
     invest_data_map: dict[str, Act29SideDataAct29SideInvestData] | None = None
     major_invest_id_list: list[str] | None = None
     rare_invest_id_list: list[str] | None = None
     const_data: Act29SideDataAct29SideConstData | None = None
-    zone_addition_data_map: dict[str, Act29SideDataAct29SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act29SideDataAct29SideZoneAdditionData] | None = None
     music_data_map: list[Act29SideDataAct29SideMusicData] | None = None
 
 
@@ -4078,9 +4214,7 @@ class Act35SideDataAct35SideConstData(GameDataModel):
 
     campaign_stage_id: str | None = None
     campaign_enemy_cnt: int = 0
-    milestone_grand_reward_info_list: (
-        list[Act35SideDataAct35SideMileStoneGrandRewardInfo] | None
-    ) = None
+    milestone_grand_reward_info_list: list[Act35SideDataAct35SideMileStoneGrandRewardInfo] | None = None
     unlock_level_id: str | None = None
     bird_spine_low_rate: float = 0.0
     bird_spine_high_rate: float = 0.0
@@ -4120,14 +4254,10 @@ class Act35SideData(GameDataModel):
     task_data_map: dict[str, Act35SideDataAct35SideChallengeTaskData] | None = None
     card_data_map: dict[str, Act35SideDataAct35SideCardData] | None = None
     material_data_map: dict[str, Act35SideDataAct35SideMaterialData] | None = None
-    dialogue_group_data_map: (
-        dict[str, Act35SideDataAct35SideDialogueGroupData] | None
-    ) = None
+    dialogue_group_data_map: dict[str, Act35SideDataAct35SideDialogueGroupData] | None = None
     const_data: Act35SideDataAct35SideConstData | None = None
     mile_stone_list: list[Act35SideDataAct35SideMileStoneData] | None = None
-    zone_addition_data_map: dict[str, Act35SideDataAct35SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act35SideDataAct35SideZoneAdditionData] | None = None
 
 
 class ActVecBreakV2BossData(GameDataModel):
@@ -4335,12 +4465,8 @@ class Act36SideData(GameDataModel):
     """clz_Torappu_Act36SideData"""
 
     zone_addition_data: dict[str, Act36SideDataAct36SideZoneAdditionData] | None = None
-    enemy_handbook_data: dict[str, Act36SideDataAct36SideEnemyHandbookData] | None = (
-        None
-    )
-    token_handbook_data: dict[str, Act36SideDataAct36SideTokenHandbookData] | None = (
-        None
-    )
+    enemy_handbook_data: dict[str, Act36SideDataAct36SideEnemyHandbookData] | None = None
+    token_handbook_data: dict[str, Act36SideDataAct36SideTokenHandbookData] | None = None
     const_data: Act36SideDataAct36SideConstData | None = None
 
 
@@ -4388,15 +4514,11 @@ class Act38SideDataAct38SidePuzzleGroupFocusData(GameDataModel):
 class Act38SideData(GameDataModel):
     """clz_Torappu_Act38SideData"""
 
-    zone_addition_data_map: dict[str, Act38SideDataAct38SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act38SideDataAct38SideZoneAdditionData] | None = None
     puzzle_info_map: dict[str, Act38SideDataAct38SidePuzzleInfo] | None = None
     npc_dialog_list: list[Act38SideDataAct38SideNpcDialogData] | None = None
     const_data: Act38SideDataConstData | None = None
-    puzzle_group_focus_data_map: (
-        dict[str, Act38SideDataAct38SidePuzzleGroupFocusData] | None
-    ) = None
+    puzzle_group_focus_data_map: dict[str, Act38SideDataAct38SidePuzzleGroupFocusData] | None = None
 
 
 class ActArcadeDataArcadeStageRankRewardLevelData(GameDataModel):
@@ -4412,9 +4534,7 @@ class ActArcadeDataArcadeStageRankRewardData(GameDataModel):
 
     stage_id: str | None = None
     max_reward_rank: str = "B"
-    rank_reward_level_datas: (
-        list[ActArcadeDataArcadeStageRankRewardLevelData] | None
-    ) = None
+    rank_reward_level_datas: list[ActArcadeDataArcadeStageRankRewardLevelData] | None = None
 
 
 class ActArcadeDataArcadeStageAdditionalData(GameDataModel):
@@ -4434,8 +4554,6 @@ class ActArcadeDataArcadeZoneAdditionalData(GameDataModel):
     zone_id: str | None = None
     sort_id: int = 0
     zone_name: str | None = None
-    zone_entry_pic_id: str | None = None
-    stage_info_prefab_id: str | None = None
     start_ts: int = 0
     end_ts: int = 0
     stages: list[str] | None = None
@@ -4499,6 +4617,8 @@ class ActArcadeDataArcadeConstData(GameDataModel):
     reward_home_theme_text: str | None = None
     reward_avatar_id: str | None = None
     reward_avatar_text: str | None = None
+    reward_background_id: str | None = None
+    reward_background_text: str | None = None
     badge_collection_name: str | None = None
     collection_entry_related_badge: str | None = None
     zone_entry_unlock_toast: str | None = None
@@ -4514,12 +4634,8 @@ class ActArcadeDataArcadeConstData(GameDataModel):
 class ActArcadeData(GameDataModel):
     """clz_Torappu_ActArcadeData"""
 
-    stage_addition_data_dict: (
-        dict[str, ActArcadeDataArcadeStageAdditionalData] | None
-    ) = None
-    zone_additional_data_dict: (
-        dict[str, ActArcadeDataArcadeZoneAdditionalData] | None
-    ) = None
+    stage_addition_data_dict: dict[str, ActArcadeDataArcadeStageAdditionalData] | None = None
+    zone_additional_data_dict: dict[str, ActArcadeDataArcadeZoneAdditionalData] | None = None
     badge_data_dict: dict[str, ActArcadeDataArcadeBadgeData] | None = None
     tire_badge_id_dict: dict[str, str] | None = None
     badge_type_data_dict: dict[str, ActArcadeDataArcadeBadgeTypeData] | None = None
@@ -4941,9 +5057,7 @@ class ActMultiV3Data(GameDataModel):
     mission_title_dict: dict[str, str] | None = None
     title_data_dict: dict[str, ActMultiV3TitleData] | None = None
     photo_type_data_dict: dict[str, ActMultiV3PhotoTypeData] | None = None
-    photo_weekly_reward_data_dict: dict[str, ActMultiV3WeeklyPhotoRewardData] | None = (
-        None
-    )
+    photo_weekly_reward_data_dict: dict[str, ActMultiV3WeeklyPhotoRewardData] | None = None
     match_pos_data_dict: dict[str, ActMultiV3MatchPosData] | None = None
     enabled_emoticon_theme_id_list: list[str] | None = None
     diff_star_reward_dict: dict[str, ActMultiV3DiffStarRewardData] | None = None
@@ -4954,9 +5068,7 @@ class ActMultiV3Data(GameDataModel):
     const_toast_data: ActMultiV3ConstToastData | None = None
     const_data: ActMultiV3ConstData | None = None
     sail_boat_level_pool_dict: dict[str, ActMultiV3SailBoatLevelPoolData] | None = None
-    sail_boat_block_pool_dict: (
-        dict[str, list[ActMultiV3SailBoatBlockPoolData]] | None
-    ) = None
+    sail_boat_block_pool_dict: dict[str, list[ActMultiV3SailBoatBlockPoolData]] | None = None
     sail_boat_block_info_list: dict[str, ActMultiV3SailBoatBlockInfoData] | None = None
 
 
@@ -5338,9 +5450,7 @@ class Act42SideData(GameDataModel):
     file_data: dict[str, Act42SideDataAct42SideFileData] | None = None
     daily_reward_list: list[Act42SideDataAct42SideDailyRewardData] | None = None
     const_data: Act42SideDataAct42SideConstData | None = None
-    zone_addition_data_map: dict[str, Act42SideDataAct42SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act42SideDataAct42SideZoneAdditionData] | None = None
 
 
 class Act44SideDataAct44SideZoneAdditionData(GameDataModel):
@@ -5430,13 +5540,9 @@ class Act44SideDataAct44SideConstData(GameDataModel):
     attention_min: int = 0
     trust_min: int = 0
     patience_rc_round_num: int = Field(default=0, alias="patienceRCRoundNum")
-    beginner_patience_rc_round_num: int = Field(
-        default=0, alias="beginnerPatienceRCRoundNum"
-    )
+    beginner_patience_rc_round_num: int = Field(default=0, alias="beginnerPatienceRCRoundNum")
     special_customer_list_id: list[str] | None = None
-    milestone_reward_list: (
-        list[Act44SideDataAct44SideMilestoneSpecialRewardInfo] | None
-    ) = None
+    milestone_reward_list: list[Act44SideDataAct44SideMilestoneSpecialRewardInfo] | None = None
     for_count_big_success: int = 0
     outer_open_unlock: str | None = None
     customer_tag_format: str | None = None
@@ -5445,9 +5551,7 @@ class Act44SideDataAct44SideConstData(GameDataModel):
 class Act44SideData(GameDataModel):
     """clz_Torappu_Act44SideData"""
 
-    zone_addition_data_map: dict[str, Act44SideDataAct44SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act44SideDataAct44SideZoneAdditionData] | None = None
     customer_data_map: dict[str, Act44SideDataAct44SideCustomerData] | None = None
     tag_data_map: dict[str, Act44SideDataAct44SideTagData] | None = None
     choice_data_map: dict[str, Act44SideDataAct44SideChoiceData] | None = None
@@ -5550,9 +5654,7 @@ class Act1VHalfIdleStageProductionData(GameDataModel):
 
     stage_id: str | None = None
     fixed_production: list[str] | None = None
-    production_data: (
-        dict[str, Act1VHalfIdleStageProductionDataItemProductionData] | None
-    ) = None
+    production_data: dict[str, Act1VHalfIdleStageProductionDataItemProductionData] | None = None
 
 
 class Act1VHalfIdleCharRankDataCharRankData(GameDataModel):
@@ -5591,9 +5693,7 @@ class Act1VHalfIdleCharEvolveData(GameDataModel):
     """clz_Torappu_Act1VHalfIdleCharEvolveData"""
 
     rarity: str = "TIER_1"
-    profession_evolve_data: (
-        dict[str, Act1VHalfIdleCharEvolveDataProfessionCharEvolveData] | None
-    ) = None
+    profession_evolve_data: dict[str, Act1VHalfIdleCharEvolveDataProfessionCharEvolveData] | None = None
 
 
 class Act1VHalfIdleCharMaxRankDataMaxRankData(GameDataModel):
@@ -5792,9 +5892,7 @@ class Act1VHalfIdleDiagramData(GameDataModel):
     height: float = 0.0
     point_pos_data_map: dict[str, Act1VHalfIdleDiagramDataPointPosData] | None = None
     line_pos_data_map: dict[str, Act1VHalfIdleDiagramDataLinePosData] | None = None
-    line_relation_data_map: (
-        dict[str, Act1VHalfIdleDiagramDataLineRelationData] | None
-    ) = None
+    line_relation_data_map: dict[str, Act1VHalfIdleDiagramDataLineRelationData] | None = None
     node_point_data_map: dict[str, Act1VHalfIdleDiagramDataNodePointData] | None = None
 
 
@@ -5883,9 +5981,7 @@ class Act1VHalfIdleData(GameDataModel):
     enemy_item_drop_pool_dict: dict[str, Act1VHalfIdleEnemyDropBundle] | None = None
     battle_item_pool_dict: dict[str, list[Act1VBattleItemDropSlot]] | None = None
     resource_item_pool_dict: dict[str, list[Act1VWeightedResItemBundle]] | None = None
-    equip_item_pool_dict: dict[str, list[Act1VHalfIdleWeightedBattleEquip]] | None = (
-        None
-    )
+    equip_item_pool_dict: dict[str, list[Act1VHalfIdleWeightedBattleEquip]] | None = None
     trap_item_pool_dict: dict[str, list[str]] | None = None
     equip_item_data: dict[str, dict[int, list[Act1VHalfIdleEquipData]]] | None = None
     trap_meta_dict: dict[str, Act1VHalfIdleTrapMeta] | None = None
@@ -5944,9 +6040,7 @@ class Act45SideData(GameDataModel):
     char_data: dict[str, Act45SideDataAct45SideCharData] | None = None
     mail_data: dict[str, Act45SideDataAct45SideMailData] | None = None
     const_data: Act45SideDataAct45SideConstData | None = None
-    zone_addition_data_map: dict[str, Act45SideDataAct45SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act45SideDataAct45SideZoneAdditionData] | None = None
 
 
 class ActRecruitOnlyDataRecruitOnlyItemData(GameDataModel):
@@ -6032,20 +6126,12 @@ class Act46SideDataAct46SideMonopolyResourceItemData(GameDataModel):
 class Act46SideData(GameDataModel):
     """clz_Torappu_Act46SideData"""
 
-    zone_addition_data_map: dict[str, Act46SideDataAct46SideZoneAdditionData] | None = (
-        None
-    )
-    monopoly_stage_data_map: (
-        dict[str, Act46SideDataAct46SideMonopolyStageData] | None
-    ) = None
+    zone_addition_data_map: dict[str, Act46SideDataAct46SideZoneAdditionData] | None = None
+    monopoly_stage_data_map: dict[str, Act46SideDataAct46SideMonopolyStageData] | None = None
     buff_data_map: dict[str, Act46SideDataAct46SideMonopolyBuffData] | None = None
-    settle_dialog_data_map: (
-        dict[str, dict[str, list[Act46SideDataAct46SideSettleDialogData]]] | None
-    ) = None
+    settle_dialog_data_map: dict[str, dict[str, list[Act46SideDataAct46SideSettleDialogData]]] | None = None
     const_data: Act46SideDataAct46SideConstData | None = None
-    resource_item_data_map: (
-        dict[str, Act46SideDataAct46SideMonopolyResourceItemData] | None
-    ) = None
+    resource_item_data_map: dict[str, Act46SideDataAct46SideMonopolyResourceItemData] | None = None
 
 
 class ActAutoChessDataActAutoChessModeData(GameDataModel):
@@ -6057,8 +6143,11 @@ class ActAutoChessDataActAutoChessModeData(GameDataModel):
     sort_id: int = 0
     background_id: str | None = None
     desc: str | None = None
-    effect_desc_list: list[str] | None = None
-    preposed_mode: str | None = None
+    difficulty: int = 0
+    factor: float = 0.0
+    difficulty_desc: str | None = None
+    trophy_desc: str | None = None
+    event_ids: list[str] | None = None
     unlock_text: str | None = None
     loading_pic_id: str | None = None
     mode_type: str = "LOCAL"
@@ -6070,14 +6159,194 @@ class ActAutoChessDataActAutoChessModeData(GameDataModel):
     inactive_bond_id_list: list[str] | None = None
     inactive_enemy_key: list[str] | None = None
     start_time: int = 0
+    unlock_diffierent_mode_id: str | None = None
+    group_list: list[str] | None = None
 
 
-class ActAutoChessDataActAutoChessBaseRewardData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessBaseRewardData"""
+class ActAutoChessDataActAutoChessModeGroupData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessModeGroupData"""
 
-    round: int = 0
+    group_type: str = "GROUP_MULTI"
+    mode_type: str = "NONE"
+    will_expand: bool = False
+    mode_ids: list[str] | None = None
+
+
+class ActAutoChessDataActAutoChessShopLevelDisplayData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessShopLevelDisplayData"""
+
+    shop_level: int = 0
+    level_tag_bg_color: str | None = None
+    is_level_char_chess_empty: bool = False
+    is_level_trap_chess_empty: bool = False
+    char_chess_diy_slot_id_list: list[str] | None = None
+
+
+class ActAutoChessDataActAutoChessStageData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessStageData"""
+
+    stage_id: str | None = None
+    mode: list[str] | None = None
+    weight: int = 0
+
+
+class ActAutoChessDataActAutochessSpecialEnemyTypeEntry(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutochessSpecialEnemyTypeEntry"""
+
+    count: int = 0
+    count_single: int = 0
+    weight: int = 0
+    show_enemy_id: str | None = None
+
+
+class ActivityCommonMilestoneData(GameDataModel):
+    """clz_Torappu_ActivityCommonMilestoneData"""
+
+    milestone_id: str | None = None
+    milestone_lvl: int = 0
+    token_num: int = 0
+    reward_item: ItemBundle | None = None
+    available_time: int = 0
+
+
+class ActivityPeriodicalRewardConf(GameDataModel):
+    """clz_Torappu_ActivityPeriodicalRewardConf"""
+
+    id: str | None = None
+    periodical_point_cost: int = 0
+    sort_index: int = 0
+    rewards: list[MissionDisplayRewards] | None = None
+
+
+class ActAutoChessDataActAutoChessPlayerTitleData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessPlayerTitleData"""
+
+    id: str | None = None
+    type: str | None = None
+    point: int = 0
+    rank: int = 0
+    pic_id: str | None = None
+    txt: str | None = None
+
+
+class ActAutoChessDataActAutoChessShopCharChessInfoData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessShopCharChessInfoData"""
+
+    chess_level: int = 0
+    is_golden: bool = False
+    evolve_phase: str = "PHASE_0"
+    char_level: int = 0
+    skill_level: int = 0
+    favor_point: int = 0
+    equip_level: int = 0
+    purchase_price: int = 0
+    chess_sold_price: int = 0
+    elite_icon_id: str | None = None
+
+
+class ActAutoChessDataActAutoChessConstData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessConstData"""
+
+    shop_refresh_price: int = 0
+    max_deck_chess_cnt: int = 0
+    max_deck_equipment_chess_cnt: int = 0
+    max_battle_chess_cnt: int = 0
+    fallback_bond_id: str | None = None
+    store_cnt_max: int = 0
+    cost_player_hp_limit: int = 0
+    borrow_count: int = 0
+    milestone_id: str | None = None
+    daily_mission_param: int = 0
+    daily_mission_name: str | None = None
+    daily_mission_rule: str | None = None
+    milestone_track_id: str | None = None
+    escaped_battle_template_map_single_player: str | None = None
+    escaped_battle_template_map_multi_player: str | None = None
+    web_bus_type: str | None = None
+    web_update_log_bus_type: str | None = None
+    item_max_count: int = 0
+    diy_char_limit_for_levels: dict[int, int] | None = None
+    perm_shop_logo_id: str | None = None
+    content_update_time: int = 0
+    system_custom_char: list[str] | None = None
+    boss_icon_id: str | None = None
+    mode_warning_diff: int = 0
+    perfect_battle_voice_round: int = 0
+    lose_hp_voice_round: int = 0
+    bond_voice_layers: list[int] | None = None
+    shop_tag_warm_up_id: str | None = None
+
+
+class UITemplateShopTemplateShopDataShopGood(GameDataModel):
+    """clz_Torappu_UI_TemplateShop_TemplateShopData_ShopGood"""
+
+    good_id: str | None = None
+    display_name: str | None = None
+    sort_id: int = 0
+    good_type: str = "NORMAL"
     item: ItemBundle | None = None
-    daily_mission_point: int = 0
+    progress_good_id: str | None = None
+    price: int = 0
+    avail_count: int = 0
+
+
+class UITemplateShopTemplateShopDataProgessGoodItem(GameDataModel):
+    """clz_Torappu_UI_TemplateShop_TemplateShopData_ProgessGoodItem"""
+
+    order: int = 0
+    price: int = 0
+    display_name: str | None = None
+    item: ItemBundle | None = None
+
+
+class UITemplateShopTemplateShopDataTShopGroup(GameDataModel):
+    """clz_Torappu_UI_TemplateShop_TemplateShopData_TShopGroup"""
+
+    shop_group_id: str | None = None
+    sort_id: int = 0
+    pre_group: str | None = None
+    bkg_icon_id: str | None = None
+    lock_desc: str | None = None
+    shop_good: dict[str, UITemplateShopTemplateShopDataShopGood] | None = None
+    progress_goods: dict[str, list[UITemplateShopTemplateShopDataProgessGoodItem]] | None = None
+
+
+class UITemplateShopTemplateShopDataGroupShopExtraData(GameDataModel):
+    """clz_Torappu_UI_TemplateShop_TemplateShopData_GroupShopExtraData"""
+
+    in_time_text: str | None = None
+    all_end_text: str | None = None
+
+
+class UITemplateShopTemplateShopDataShopAccumulativePrizeItem(GameDataModel):
+    """clz_Torappu_UI_TemplateShop_TemplateShopData_ShopAccumulativePrizeItem"""
+
+    prize_id: str | None = None
+    sort_id: int = 0
+    pic_id: str | None = None
+    item_id: str | None = None
+    item_type: str = "NONE"
+    count: int = 0
+    cost_total: int = 0
+    acquire_title: str | None = None
+    display_name: str | None = None
+    display_discription: str | None = None
+
+
+class UITemplateShopTemplateShopData(GameDataModel):
+    """clz_Torappu_UI_TemplateShop_TemplateShopData"""
+
+    shop_id: str | None = None
+    shop_name: str | None = None
+    type: str = "NORMAL"
+    price: ItemBundle | None = None
+    shop_group: dict[str, UITemplateShopTemplateShopDataTShopGroup] | None = None
+    icon_color_codes: str | None = None
+    button_color_codes: str | None = None
+    start_time: int = 0
+    end_time: int = 0
+    group_extra_data: UITemplateShopTemplateShopDataGroupShopExtraData | None = None
+    accumulative_prize_goods: dict[str, UITemplateShopTemplateShopDataShopAccumulativePrizeItem] | None = None
 
 
 class ActAutoChessDataActAutoChessBandData(GameDataModel):
@@ -6085,13 +6354,122 @@ class ActAutoChessDataActAutoChessBandData(GameDataModel):
 
     band_id: str | None = None
     sort_id: int = 0
-    mode_type_list: list[str] | None = None
+    band_type: str = "NONE"
+    inactive_mode_id_list: list[str] | None = None
     band_desc: str | None = None
     total_hp: int = 0
     effect_id: str | None = None
     victor_count: int = 0
+    master_victor_count: int = 0
     band_reward_modulus: float = 0.0
-    update_time: int = 0
+    offseason_priority: int = 0
+    relate_bond_list: list[str] | None = None
+
+
+class ActAutoChessDataActAutoChessBondInfo(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessBondInfo"""
+
+    bond_id: str | None = None
+    name: str | None = None
+    desc: str | None = None
+    icon_id: str | None = None
+    active_count: int = 0
+    active_condition: str = "BOARD"
+    active_condition_template: str | None = None
+    active_param_list: list[str] | None = None
+    effect_id: str | None = None
+    active_type: str = "BATTLE"
+    identifier: int = 0
+    weight: int = 0
+    is_active_in_deck: bool = False
+    max_inactive_bond_count: int = 0
+    no_stack: bool = False
+    no_select: bool = False
+    chess_id_list: list[str] | None = None
+
+
+class ActAutoChessDataActAutoChessGarrisonData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessGarrisonData"""
+
+    garrison_desc: str | None = None
+    event_type: str | None = None
+    event_type_desc: str | None = None
+    event_type_icon: str | None = None
+    event_type_small_icon: str | None = None
+    event_effect: str | None = None
+    effect_type: str | None = None
+    char_level: int = 0
+    battle_rune_key: str | None = None
+    blackboard: list[BlackboardDataPair] | None = None
+    description: str | None = None
+
+
+class ActAutoChessDataActAutoChessEffectDescParamInfo(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessEffectDescParamInfo"""
+
+    desc_param_base: str | None = None
+    desc_param_per_stack: str | None = None
+    desc_param_max: float = 0.0
+
+
+class ActAutoChessDataActAutoChessEffectDescParamData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessEffectDescParamData"""
+
+    desc_param_infos: list[ActAutoChessDataActAutoChessEffectDescParamInfo] | None = None
+    phase_type: str = "NONE"
+    bond_phase_count_list: list[int] | None = None
+
+
+class ActAutoChessDataActAutoChessEffectInfoData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessEffectInfoData"""
+
+    effect_id: str | None = None
+    effect_type: str = "NONE"
+    effect_counter_type: str = "NONE"
+    continued_round: int = 0
+    effect_name: str | None = None
+    effect_desc: str | None = None
+    effect_deco_icon_id: str | None = None
+    enemy_price: int = 0
+    show_tag: str | None = None
+    display_in_hud: bool = Field(default=False, alias="displayInHUD")
+
+
+class ActAutoChessDataActAutoChessSkillInfoData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessSkillInfoData"""
+
+    effect_id: str | None = None
+    skill_desc: str | None = None
+    skill_type: str = "NONE"
+    skill_cost: int = 0
+    skill_avail_type: str = "DEFAULT"
+    skill_avail_count: int = 0
+    unlock_type: str | None = None
+    unlock_param: list[str] | None = None
+    minor_unlock: bool = False
+    unlock_effect_id: str | None = None
+    target_type: str | None = None
+    target_filter_type: str | None = None
+    target_tip: str | None = None
+    is_unusable_at_special_recruit: bool = False
+    band_id: str | None = None
+
+
+class ActAutoChessDataActAutoChessBuffInfoData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessBuffInfoData"""
+
+    key: str | None = None
+    blackboard: list[BlackboardDataPair] | None = None
+
+
+class ActAutoChessDataActAutoChessShopLevelData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessShopLevelData"""
+
+    shop_level: int = 0
+    initial_upgrade_price: int = 0
+    char_chess_count: int = 0
+    item_count: int = 0
+    level_tag_bg_color: str | None = None
 
 
 class ActAutoChessDataActAutoChessCharChessStatusData(GameDataModel):
@@ -6113,28 +6491,11 @@ class ActAutoChessDataActAutoChessCharChessData(GameDataModel):
     status: ActAutoChessDataActAutoChessCharChessStatusData | None = None
     upgrade_chess_id: str | None = None
     upgrade_num: int = 0
+    equip_slot_num: int = 0
+    show_tag: str | None = None
     bond_ids: list[str] | None = None
     garrison_ids: list[str] | None = None
-
-
-class ActAutoChessDataActAutoChessShopLevelData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessShopLevelData"""
-
-    shop_level: int = 0
-    initial_upgrade_price: int = 0
-    char_chess_count: int = 0
-    item_count: int = 0
-    level_tag_bg_color: str | None = None
-
-
-class ActAutoChessDataActAutoChessShopLevelDisplayData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessShopLevelDisplayData"""
-
-    shop_level: int = 0
-    level_tag_bg_color: str | None = None
-    is_level_char_chess_empty: bool = False
-    is_level_trap_chess_empty: bool = False
-    char_chess_diy_slot_id_list: list[str] | None = None
+    desc: str | None = None
 
 
 class ActAutoChessDataActAutoChessCharShopChessData(GameDataModel):
@@ -6180,8 +6541,10 @@ class ActAutoChessDataActAutoChessTrapChessData(GameDataModel):
     trap_duration: int = 0
     effect_id: str | None = None
     give_bond_id: str | None = None
-    give_power_id: str | None = None
     can_give_bond: bool = False
+    can_fuse: bool = False
+    fuse_with: str | None = None
+    fuse_result: str | None = None
     item_type: str = "CHAR"
 
 
@@ -6198,12 +6561,15 @@ class ActAutoChessDataActAutoChessTrapShopChessData(GameDataModel):
     trap_id: str | None = None
 
 
-class ActAutoChessDataActAutoChessStageData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessStageData"""
+class ActAutoChessDataActAutoChessEffectChoiceInfoData(GameDataModel):
+    """clz_Torappu_ActAutoChessData_ActAutoChessEffectChoiceInfoData"""
 
-    stage_id: str | None = None
-    mode: list[str] | None = None
-    weight: int = 0
+    choice_event_id: str | None = None
+    choice_type: str = "EQUIP_FREE"
+    effect_type: str = "NONE"
+    selection_type: str = "ROBIN"
+    name: str | None = None
+    desc: str | None = None
 
 
 class ActAutoChessDataActAutoChessBattleData(GameDataModel):
@@ -6214,86 +6580,13 @@ class ActAutoChessDataActAutoChessBattleData(GameDataModel):
     is_sp_prepare: bool = False
 
 
-class ActAutoChessDataActAutoChessBondInfo(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessBondInfo"""
-
-    bond_id: str | None = None
-    name: str | None = None
-    desc: str | None = None
-    icon_id: str | None = None
-    active_count: int = 0
-    active_condition: str = "BOARD"
-    active_condition_template: str | None = None
-    active_param_list: list[str] | None = None
-    effect_id: str | None = None
-    active_type: str = "BATTLE"
-    identifier: int = 0
-    weight: int = 0
-    is_active_in_deck: bool = False
-    max_inactive_bond_count: int = 0
-    desc_param_base_list: list[str] | None = None
-    desc_param_per_stack_list: list[str] | None = None
-    no_stack: bool = False
-    chess_id_list: list[str] | None = None
-
-
-class ActAutoChessDataActAutoChessGarrisonData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessGarrisonData"""
-
-    garrison_desc: str | None = None
-    event_type: str | None = None
-    event_type_desc: str | None = None
-    event_type_icon: str | None = None
-    event_type_small_icon: str | None = None
-    effect_type: str | None = None
-    char_level: int = 0
-    battle_rune_key: str | None = None
-    blackboard: list[BlackboardDataPair] | None = None
-    description: str | None = None
-
-
-class ActAutoChessDataActAutoChessEffectInfoData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessEffectInfoData"""
-
-    effect_id: str | None = None
-    effect_type: str = "NONE"
-    effect_counter_type: str = "NONE"
-    continued_round: int = 0
-    effect_name: str | None = None
-    effect_desc: str | None = None
-    effect_deco_icon_id: str | None = None
-    enemy_price: int = 0
-
-
-class ActAutoChessDataActAutoChessBuffInfoData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessBuffInfoData"""
-
-    key: str | None = None
-    blackboard: list[BlackboardDataPair] | None = None
-    count_type: str = "NONE"
-
-
-class ActAutoChessDataActAutoChessEffectChoiceInfoData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessEffectChoiceInfoData"""
-
-    choice_event_id: str | None = None
-    choice_type: str = "EQUIP_FREE"
-    effect_type: str = "NONE"
-    name: str | None = None
-    desc: str | None = None
-    type_txt_color: str | None = None
-
-
 class ActAutoChessDataActAutochessBossEntry(GameDataModel):
     """clz_Torappu_ActAutoChessData_ActAutochessBossEntry"""
 
     boss_id: str | None = None
     sort_id: int = 0
     weight: int = 0
-    blood_point: int = 0
-    blood_point_normal: int = 0
-    blood_point_hard: int = 0
-    blood_point_abyss: int = 0
+    blood_data_dict: dict[str, int] | None = None
     is_hiding_boss: bool = False
 
 
@@ -6308,13 +6601,6 @@ class ActAutoChessDataActAutochessSpecialEnemyEntry(GameDataModel):
     attached_elite_enemy_keys: list[str] | None = None
 
 
-class ActAutoChessDataActAutochessSpecialEnemyTypeEntry(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutochessSpecialEnemyTypeEntry"""
-
-    count: int = 0
-    weight: int = 0
-
-
 class ActAutoChessDataActAutoChessTrainingNpcData(GameDataModel):
     """clz_Torappu_ActAutoChessData_ActAutoChessTrainingNpcData"""
 
@@ -6325,53 +6611,59 @@ class ActAutoChessDataActAutoChessTrainingNpcData(GameDataModel):
     band_id: str | None = None
 
 
-class ActivityCommonMilestoneData(GameDataModel):
-    """clz_Torappu_ActivityCommonMilestoneData"""
+class AutoChessDataAutoChessBandData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessBandData"""
 
-    milestone_id: str | None = None
-    milestone_lvl: int = 0
-    token_num: int = 0
-    reward_item: ItemBundle | None = None
-    available_time: int = 0
-
-
-class ActAutoChessDataActAutoChessPlayerTitleData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessPlayerTitleData"""
-
-    id: str | None = None
-    pic_id: str | None = None
-    txt: str | None = None
+    band_id: str | None = None
+    band_name: str | None = None
+    band_icon_id: str | None = None
+    unlock_desc: str | None = None
 
 
-class ActAutoChessDataActAutoChessShopCharChessInfoData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessShopCharChessInfoData"""
+class AutoChessDataAutoChessBondInfoData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessBondInfoData"""
 
-    chess_level: int = 0
-    is_golden: bool = False
-    evolve_phase: str = "PHASE_0"
-    char_level: int = 0
-    skill_level: int = 0
-    favor_point: int = 0
-    equip_level: int = 0
-    purchase_price: int = 0
-    chess_sold_price: int = 0
-    elite_icon_id: str | None = None
+    bond_id: str | None = None
+    bond_type: str = "NONE"
+    power_id_list: list[str] | None = None
+    name: str | None = None
+    icon: str | None = None
+    is_power: bool = False
+    bond_order: int = 0
+    is_hidden_char_list: bool = False
 
 
-class ActAutoChessDataActAutoChessConstData(GameDataModel):
-    """clz_Torappu_ActAutoChessData_ActAutoChessConstData"""
+class AutoChessDataAutoChessBossInfoData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessBossInfoData"""
 
-    shop_refresh_price: int = 0
-    max_deck_chess_cnt: int = 0
-    max_battle_chess_cnt: int = 0
-    fallback_bond_id: str | None = None
-    store_cnt_max: int = 0
-    cost_player_hp_limit: int = 0
-    milestone_id: str | None = None
-    borrow_count: int = 0
-    daily_mission_param: int = 0
-    daily_mission_name: str | None = None
-    daily_mission_rule: str | None = None
+    boss_id: str | None = None
+    enemy_id: str | None = None
+    handbook_enemy_id: str | None = None
+
+
+class AutoChessDataAutoChessRandomEnemyAttributeData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessRandomEnemyAttributeData"""
+
+    enemy_key: str | None = None
+    level: int = 0
+    extra_enemy_identifier: int = 0
+    extra_enemy_key_list: list[str] | None = None
+    is_fly_enemy: bool = False
+    enemy_battle_effectiveness_factor: float = 0.0
+
+
+class ActAutoChessTrainingDataAutoChessTrainingData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_AutoChessTrainingData"""
+
+    band_data_dict: dict[str, AutoChessDataAutoChessBandData] | None = None
+    bond_data_dict: dict[str, AutoChessDataAutoChessBondInfoData] | None = None
+    boss_info_dict: dict[str, AutoChessDataAutoChessBossInfoData] | None = None
+    random_enemy_attribute_dict: dict[str, AutoChessDataAutoChessRandomEnemyAttributeData] | None = None
+
+
+class ActAutoChessTrainingDataTrainingConstData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_TrainingConstData"""
+
     trstage_band_id: str | None = None
     trstage_boss_id: str | None = None
     tr_stage_id: str | None = None
@@ -6379,76 +6671,132 @@ class ActAutoChessDataActAutoChessConstData(GameDataModel):
     tr_special_enemy_types: list[str] | None = None
     tr_bond_ids: list[str] | None = None
     tr_banned_bond_ids: list[str] | None = None
-    milestone_track_id: str | None = None
-    escaped_battle_template_map_single_player: str | None = None
-    escaped_battle_template_map_multi_player: str | None = None
-    web_bus_type: str | None = None
+    tr_stage_boss_hp: int = Field(default=0, alias="trStageBossHP")
+    tr_in_game_diy_chess_id: str | None = None
+    tr_in_game_ban_diy_chess_id: str | None = None
+
+
+class ActAutoChessTrainingDataTrainingShopSlotData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_TrainingShopSlotData"""
+
+    slot: int = 0
+    chess_ids: list[str] | None = None
+
+
+class ActAutoChessTrainingDataTrainingRoundInfoData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_TrainingRoundInfoData"""
+
+    round: int = 0
+    is_boss_turn: bool = False
+    base_gold_cnt: int = 0
+
+
+class ActAutoChessTrainingDataTrainingSpecialChoiceData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_TrainingSpecialChoiceData"""
+
+    choice_event_id: str | None = None
+    round: int = 0
+    slot: int = 0
+    equip_id: str | None = None
+    training_npc_id: str | None = None
+
+
+class ActAutoChessTrainingDataTrainingNpcDeployData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_TrainingNpcDeployData"""
+
+    round: int = 0
+    training_npc_id: str | None = None
+    chess_id: str | None = None
+    position: UnityEngineVector2 | None = None
+    direction: int = 0
+    equip_chess_ids: list[str] | None = None
+    garrison_layer: int = 0
+
+
+class ActAutoChessTrainingDataTrainingDiyChessData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData_TrainingDiyChessData"""
+
+    chess_id: str | None = None
+    char_id: str | None = None
+    tmpl_id: str | None = None
+    skin_id: str | None = None
+    skill_index: int = 0
+    uni_equip_id: str | None = None
+    potential_rank: int = 0
+
+
+class ActAutoChessTrainingData(GameDataModel):
+    """clz_Torappu_ActAutoChessTrainingData"""
+
+    override_auto_chess_data: ActAutoChessTrainingDataAutoChessTrainingData | None = None
+    band_data_list_dict: dict[str, ActAutoChessDataActAutoChessBandData] | None = None
+    bond_info_dict: dict[str, ActAutoChessDataActAutoChessBondInfo] | None = None
+    garrison_data_dict: dict[str, ActAutoChessDataActAutoChessGarrisonData] | None = None
+    effect_info_data_dict: dict[str, ActAutoChessDataActAutoChessEffectInfoData] | None = None
+    effect_desc_param_data_dict: dict[str, ActAutoChessDataActAutoChessEffectDescParamData] | None = None
+    skill_info_data_dict: dict[str, ActAutoChessDataActAutoChessSkillInfoData] | None = None
+    effect_buff_info_data_dict: dict[str, list[ActAutoChessDataActAutoChessBuffInfoData]] | None = None
+    shop_level_data_dict: dict[str, dict[int, ActAutoChessDataActAutoChessShopLevelData]] | None = None
+    char_chess_data_dict: dict[str, ActAutoChessDataActAutoChessCharChessData] | None = None
+    char_shop_chess_datas: dict[str, ActAutoChessDataActAutoChessCharShopChessData] | None = None
+    trap_chess_data_dict: dict[str, ActAutoChessDataActAutoChessTrapChessData] | None = None
+    trap_shop_chess_datas: dict[str, ActAutoChessDataActAutoChessTrapShopChessData] | None = None
+    chess_normal_id_lookup_dict: dict[str, str] | None = None
+    effect_choice_info_dict: dict[str, ActAutoChessDataActAutoChessEffectChoiceInfoData] | None = None
+    battle_data_dict: dict[str, dict[int, list[ActAutoChessDataActAutoChessBattleData]]] | None = None
+    boss_info_dict: dict[str, ActAutoChessDataActAutochessBossEntry] | None = None
+    special_enemy_info_dict: dict[str, ActAutoChessDataActAutochessSpecialEnemyEntry] | None = None
+    training_npc_list: list[ActAutoChessDataActAutoChessTrainingNpcData] | None = None
+    const_data: ActAutoChessDataActAutoChessConstData | None = None
+    training_const_data: ActAutoChessTrainingDataTrainingConstData | None = None
+    training_shop_dict: dict[int, list[ActAutoChessTrainingDataTrainingShopSlotData]] | None = None
+    training_round_info_dict: dict[int, ActAutoChessTrainingDataTrainingRoundInfoData] | None = None
+    training_special_choice_dict: dict[str, list[ActAutoChessTrainingDataTrainingSpecialChoiceData]] | None = None
+    training_npc_deploy_dict: dict[int, list[ActAutoChessTrainingDataTrainingNpcDeployData]] | None = None
+    training_diy_chess_dict: dict[str, ActAutoChessTrainingDataTrainingDiyChessData] | None = None
+    special_enemy_random_type_dict: dict[str, ActAutoChessDataActAutochessSpecialEnemyTypeEntry] | None = None
 
 
 class ActAutoChessData(GameDataModel):
     """clz_Torappu_ActAutoChessData"""
 
     mode_data_dict: dict[str, ActAutoChessDataActAutoChessModeData] | None = None
-    base_reward_data_list: list[ActAutoChessDataActAutoChessBaseRewardData] | None = (
-        None
-    )
-    band_data_list_dict: dict[str, ActAutoChessDataActAutoChessBandData] | None = None
-    char_chess_data_dict: (
-        dict[str, ActAutoChessDataActAutoChessCharChessData] | None
-    ) = None
+    mode_group_data_dict: dict[str, ActAutoChessDataActAutoChessModeGroupData] | None = None
     chess_normal_id_lookup_dict: dict[str, str] | None = None
     diy_chess_dict: dict[str, str] | None = None
-    shop_level_data_dict: (
-        dict[str, dict[int, ActAutoChessDataActAutoChessShopLevelData]] | None
-    ) = None
-    shop_level_display_data_dict: (
-        dict[int, ActAutoChessDataActAutoChessShopLevelDisplayData] | None
-    ) = None
-    char_shop_chess_datas: (
-        dict[str, ActAutoChessDataActAutoChessCharShopChessData] | None
-    ) = None
-    trap_chess_data_dict: (
-        dict[str, ActAutoChessDataActAutoChessTrapChessData] | None
-    ) = None
-    trap_shop_chess_datas: (
-        dict[str, ActAutoChessDataActAutoChessTrapShopChessData] | None
-    ) = None
+    diy_chess_info_dict: dict[str, list[str]] | None = None
+    shop_level_display_data_dict: dict[int, ActAutoChessDataActAutoChessShopLevelDisplayData] | None = None
     stage_datas_dict: dict[str, ActAutoChessDataActAutoChessStageData] | None = None
-    battle_data_dict: (
-        dict[str, dict[int, list[ActAutoChessDataActAutoChessBattleData]]] | None
-    ) = None
-    bond_info_dict: dict[str, ActAutoChessDataActAutoChessBondInfo] | None = None
-    garrison_data_dict: dict[str, ActAutoChessDataActAutoChessGarrisonData] | None = (
-        None
-    )
-    effect_info_data_dict: (
-        dict[str, ActAutoChessDataActAutoChessEffectInfoData] | None
-    ) = None
-    effect_buff_info_data_dict: (
-        dict[str, list[ActAutoChessDataActAutoChessBuffInfoData]] | None
-    ) = None
-    effect_choice_info_dict: (
-        dict[str, ActAutoChessDataActAutoChessEffectChoiceInfoData] | None
-    ) = None
-    boss_info_dict: dict[str, ActAutoChessDataActAutochessBossEntry] | None = None
-    special_enemy_info_dict: (
-        dict[str, ActAutoChessDataActAutochessSpecialEnemyEntry] | None
-    ) = None
     enemy_info_dict: dict[str, list[str]] | None = None
-    special_enemy_random_type_dict: (
-        dict[str, ActAutoChessDataActAutochessSpecialEnemyTypeEntry] | None
-    ) = None
-    training_npc_list: list[ActAutoChessDataActAutoChessTrainingNpcData] | None = None
+    special_enemy_random_type_dict: dict[str, ActAutoChessDataActAutochessSpecialEnemyTypeEntry] | None = None
+    enemy_reward_type_dict: dict[str, str] | None = None
+    enemy_reward_text_format_dict: dict[str, str] | None = None
     milestone_list: list[ActivityCommonMilestoneData] | None = None
+    periodical_rewards: dict[str, ActivityPeriodicalRewardConf] | None = None
     mode_factor_info: dict[str, float] | None = None
     difficulty_factor_info: dict[str, float] | None = None
-    player_title_data_dict: (
-        dict[str, ActAutoChessDataActAutoChessPlayerTitleData] | None
-    ) = None
-    shop_char_chess_info_data: (
-        dict[int, list[ActAutoChessDataActAutoChessShopCharChessInfoData]] | None
-    ) = None
+    player_title_data_dict: dict[str, ActAutoChessDataActAutoChessPlayerTitleData] | None = None
+    shop_char_chess_info_data: dict[int, list[ActAutoChessDataActAutoChessShopCharChessInfoData]] | None = None
     const_data: ActAutoChessDataActAutoChessConstData | None = None
+    season_shop: UITemplateShopTemplateShopData | None = None
+    band_data_list_dict: dict[str, ActAutoChessDataActAutoChessBandData] | None = None
+    bond_info_dict: dict[str, ActAutoChessDataActAutoChessBondInfo] | None = None
+    garrison_data_dict: dict[str, ActAutoChessDataActAutoChessGarrisonData] | None = None
+    effect_desc_param_data_dict: dict[str, ActAutoChessDataActAutoChessEffectDescParamData] | None = None
+    effect_info_data_dict: dict[str, ActAutoChessDataActAutoChessEffectInfoData] | None = None
+    skill_info_data_dict: dict[str, ActAutoChessDataActAutoChessSkillInfoData] | None = None
+    effect_buff_info_data_dict: dict[str, list[ActAutoChessDataActAutoChessBuffInfoData]] | None = None
+    shop_level_data_dict: dict[str, dict[int, ActAutoChessDataActAutoChessShopLevelData]] | None = None
+    char_chess_data_dict: dict[str, ActAutoChessDataActAutoChessCharChessData] | None = None
+    char_shop_chess_datas: dict[str, ActAutoChessDataActAutoChessCharShopChessData] | None = None
+    trap_chess_data_dict: dict[str, ActAutoChessDataActAutoChessTrapChessData] | None = None
+    trap_shop_chess_datas: dict[str, ActAutoChessDataActAutoChessTrapShopChessData] | None = None
+    effect_choice_info_dict: dict[str, ActAutoChessDataActAutoChessEffectChoiceInfoData] | None = None
+    battle_data_dict: dict[str, dict[int, list[ActAutoChessDataActAutoChessBattleData]]] | None = None
+    boss_info_dict: dict[str, ActAutoChessDataActAutochessBossEntry] | None = None
+    special_enemy_info_dict: dict[str, ActAutoChessDataActAutochessSpecialEnemyEntry] | None = None
+    training_npc_list: list[ActAutoChessDataActAutoChessTrainingNpcData] | None = None
+    training_data: ActAutoChessTrainingData | None = None
 
 
 class ActFootballDataActFootballZoneAdditionData(GameDataModel):
@@ -6509,12 +6857,8 @@ class ActFootballDataActFootballConstData(GameDataModel):
 class ActFootballData(GameDataModel):
     """clz_Torappu_ActFootballData"""
 
-    zone_addition_data_map: (
-        dict[str, ActFootballDataActFootballZoneAdditionData] | None
-    ) = None
-    stage_addition_data_map: (
-        dict[str, ActFootballDataActFootballStageAdditionData] | None
-    ) = None
+    zone_addition_data_map: dict[str, ActFootballDataActFootballZoneAdditionData] | None = None
+    stage_addition_data_map: dict[str, ActFootballDataActFootballStageAdditionData] | None = None
     milestone_list: list[ActFootballDataActFootballMilestoneItemData] | None = None
     npc_char_data_dict: dict[int, ActFootballDataActFootballNPCCharData] | None = None
     const_data: ActFootballDataActFootballConstData | None = None
@@ -6723,9 +7067,7 @@ class ArkdexModuleData(GameDataModel):
     advantage_type_data: dict[str, ArkdexAdvantageTypeData] | None = None
     advantage_counter_map: dict[str, list[str]] | None = None
     npc_info_data: dict[int, ArkdexNpcInfoData] | None = None
-    npc_duel_strategy_data: dict[str, dict[str, ArkdexNpcDuelStrategyData]] | None = (
-        None
-    )
+    npc_duel_strategy_data: dict[str, dict[str, ArkdexNpcDuelStrategyData]] | None = None
     item_effect_data: dict[int, ArkdexItemEffectData] | None = None
     trait_data: dict[int, ArkdexTraitData] | None = None
     scene_type_map: dict[int, str] | None = None
@@ -6950,9 +7292,7 @@ class Act53SideDataAct53SideConstData(GameDataModel):
 class Act53SideData(GameDataModel):
     """clz_Torappu_Act53SideData"""
 
-    zone_addition_data_map: dict[str, Act53SideDataAct53SideZoneAdditionData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, Act53SideDataAct53SideZoneAdditionData] | None = None
     act_odc_stage_id_list: list[str] | None = None
     const_data: Act53SideDataAct53SideConstData | None = None
 
@@ -7021,12 +7361,8 @@ class Act54SideData(GameDataModel):
 
     cards: dict[str, Act54SideDataAct54SideCardData] | None = None
     spreads: dict[str, Act54SideDataAct54SideSpreadData] | None = None
-    special_zone_stage_infos: (
-        list[Act54SideDataAct54SideSpecialZoneStageInfo] | None
-    ) = None
-    zone_addition_data_map: dict[str, Act54SideDataAct54SideZoneAdditionData] | None = (
-        None
-    )
+    special_zone_stage_infos: list[Act54SideDataAct54SideSpecialZoneStageInfo] | None = None
+    zone_addition_data_map: dict[str, Act54SideDataAct54SideZoneAdditionData] | None = None
     const_data: Act54SideDataAct54SideConstData | None = None
 
 
@@ -7101,167 +7437,159 @@ class ActVasebreakerDataActVasebreakerConstData(GameDataModel):
 class ActVasebreakerData(GameDataModel):
     """clz_Torappu_ActVasebreakerData"""
 
-    zone_addition_data_map: (
-        dict[str, ActVasebreakerDataActVasebreakerZoneAdditionData] | None
-    ) = None
-    stage_addition_data_map: (
-        dict[str, ActVasebreakerDataActVasebreakerStageAdditionData] | None
-    ) = None
-    stage_unlock_toast_map: (
-        dict[str, ActVasebreakerDataActVasebreakerStageUnlockToastData] | None
-    ) = None
-    stage_drop_data_map: (
-        dict[str, ActVasebreakerDataActVasebreakerStageDropData] | None
-    ) = None
-    milestone_list: list[ActVasebreakerDataActVasebreakerMilestoneItemData] | None = (
-        None
-    )
+    zone_addition_data_map: dict[str, ActVasebreakerDataActVasebreakerZoneAdditionData] | None = None
+    stage_addition_data_map: dict[str, ActVasebreakerDataActVasebreakerStageAdditionData] | None = None
+    stage_unlock_toast_map: dict[str, ActVasebreakerDataActVasebreakerStageUnlockToastData] | None = None
+    stage_drop_data_map: dict[str, ActVasebreakerDataActVasebreakerStageDropData] | None = None
+    milestone_list: list[ActVasebreakerDataActVasebreakerMilestoneItemData] | None = None
     sticker_list: list[ActVasebreakerDataActVasebreakerStickerData] | None = None
     const_data: ActVasebreakerDataActVasebreakerConstData | None = None
+
+
+class Act55SideDataAct55SideZoneAdditionData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideZoneAdditionData"""
+
+    zone_id: str | None = None
+    unlock_text: str | None = None
+
+
+class Act55SideDataAct55SideNewspaperData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideNewspaperData"""
+
+    stage_id: str | None = None
+    sort_id: int = 0
+    stage_name: str | None = None
+    stage_desc: str | None = None
+    bg_pic: str | None = None
+    unlock_stage_id: str | None = None
+    unlock_ts: int = 0
+    base_reward_list: list[ItemBundle] | None = None
+    advanced_reward_list: list[ItemBundle] | None = None
+    basic_target_desc: str | None = None
+    advanced_target_desc: str | None = None
+    advanced_target_param: int = 0
+    init_card_id_list: list[str] | None = None
+    rating_score_list: list[int] | None = None
+    max_score: int = 0
+    pic_id: str | None = None
+    init_empty_slot: int = 0
+    fixed_report_id_list: list[str] | None = None
+
+
+class Act55SideDataAct55SideFixedReportData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideFixedReportData"""
+
+    fixed_report_id: str | None = None
+    fixed_report_tag: str | None = None
+
+
+class Act55SideDataAct55SideHandReportData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideHandReportData"""
+
+    hand_report_id: str | None = None
+    hand_report_pic_1: str | None = Field(default=None, alias="handReportPic_1")
+    hand_report_pic_2: str | None = Field(default=None, alias="handReportPic_2")
+    hand_report_title_id: str | None = None
+    hand_report_sub_title_id: str | None = None
+    hand_report_positive_tag_list: list[str] | None = None
+    hand_report_negative_tag_list: list[str] | None = None
+    sort_id: int = 0
+
+
+class Act55SideDataAct55SideHandReportColorData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideHandReportColorData"""
+
+    hand_report_pic_1: str | None = Field(default=None, alias="handReportPic_1")
+    hand_report_title_color: str | None = None
+    hand_report_sub_title_color: str | None = None
+
+
+class Act55SideDataAct55SideBattleItemLevelData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideBattleItemLevelData"""
+
+    level: int = 0
+    score: int = 0
+
+
+class Act55SideDataAct55SideConstData(GameDataModel):
+    """clz_Torappu_Act55SideData_Act55SideConstData"""
+
+    price_item_id: str | None = None
+    price_item_type: str | None = None
+    entry_requirement: str | None = None
+    business_unlock_text: str | None = None
+    stage_unlock_text: str | None = None
+    hand_basic_score: int = 0
+    hand_positive_score: int = 0
+    hand_negative_score: int = 0
+
+
+class Act55SideData(GameDataModel):
+    """clz_Torappu_Act55SideData"""
+
+    zone_addition_data_map: dict[str, Act55SideDataAct55SideZoneAdditionData] | None = None
+    newspaper_data_map: dict[str, Act55SideDataAct55SideNewspaperData] | None = None
+    fixed_report_data_map: dict[str, Act55SideDataAct55SideFixedReportData] | None = None
+    hand_report_data_map: dict[str, Act55SideDataAct55SideHandReportData] | None = None
+    hand_report_color_data_map: dict[str, Act55SideDataAct55SideHandReportColorData] | None = None
+    report_tag_list: list[str] | None = None
+    battle_item_level_data_list: list[Act55SideDataAct55SideBattleItemLevelData] | None = None
+    const_data: Act55SideDataAct55SideConstData | None = None
 
 
 class ActivityTableActivityDetailTable(GameDataModel):
     """clz_Torappu_ActivityTable_ActivityDetailTable"""
 
     default: dict[str, DefaultFirstData] | None = Field(default=None, alias="DEFAULT")
-    checkin_only: dict[str, DefaultCheckInData] | None = Field(
-        default=None, alias="CHECKIN_ONLY"
-    )
-    checkin_all_player: dict[str, AllPlayerCheckinData] | None = Field(
-        default=None, alias="CHECKIN_ALL_PLAYER"
-    )
-    checkin_vs: dict[str, VersusCheckInData] | None = Field(
-        default=None, alias="CHECKIN_VS"
-    )
-    type_act3_d0: dict[str, Act3D0Data] | None = Field(
-        default=None, alias="TYPE_ACT3D0"
-    )
-    type_act4_d0: dict[str, Act4D0Data] | None = Field(
-        default=None, alias="TYPE_ACT4D0"
-    )
-    type_act5_d0: dict[str, Act5D0Data] | None = Field(
-        default=None, alias="TYPE_ACT5D0"
-    )
-    type_act5_d1: dict[str, Act5D1Data] | None = Field(
-        default=None, alias="TYPE_ACT5D1"
-    )
-    collection: dict[str, ActivityCollectionData] | None = Field(
-        default=None, alias="COLLECTION"
-    )
-    type_act9_d0: dict[str, Act9D0Data] | None = Field(
-        default=None, alias="TYPE_ACT9D0"
-    )
-    type_act12_side: dict[str, Act12SideData] | None = Field(
-        default=None, alias="TYPE_ACT12SIDE"
-    )
-    type_act13_side: dict[str, Act13SideData] | None = Field(
-        default=None, alias="TYPE_ACT13SIDE"
-    )
-    type_act17_side: dict[str, Act17sideData] | None = Field(
-        default=None, alias="TYPE_ACT17SIDE"
-    )
-    type_act20_side: dict[str, Act20SideData] | None = Field(
-        default=None, alias="TYPE_ACT20SIDE"
-    )
-    type_act21_side: dict[str, Act21SideData] | None = Field(
-        default=None, alias="TYPE_ACT21SIDE"
-    )
-    login_only: dict[str, ActivityLoginData] | None = Field(
-        default=None, alias="LOGIN_ONLY"
-    )
-    switch_only: dict[str, ActivitySwitchCheckinData] | None = Field(
-        default=None, alias="SWITCH_ONLY"
-    )
-    ministory: dict[str, ActivityMiniStoryData] | None = Field(
-        default=None, alias="MINISTORY"
-    )
-    roguelike: dict[str, ActivityRoguelikeData] | None = Field(
-        default=None, alias="ROGUELIKE"
-    )
-    interlock: dict[str, ActivityInterlockData] | None = Field(
-        default=None, alias="INTERLOCK"
-    )
-    boss_rush: dict[str, ActivityBossRushData] | None = Field(
-        default=None, alias="BOSS_RUSH"
-    )
-    float_parade: dict[str, ActivityFloatParadeData] | None = Field(
-        default=None, alias="FLOAT_PARADE"
-    )
-    main_buff: dict[str, ActivityMainlineBuffData] | None = Field(
-        default=None, alias="MAIN_BUFF"
-    )
-    type_act24_side: dict[str, Act24SideData] | None = Field(
-        default=None, alias="TYPE_ACT24SIDE"
-    )
-    type_act25_side: dict[str, Act25SideData] | None = Field(
-        default=None, alias="TYPE_ACT25SIDE"
-    )
-    type_act27_side: dict[str, Act27SideData] | None = Field(
-        default=None, alias="TYPE_ACT27SIDE"
-    )
-    type_act42_d0: dict[str, Act42D0Data] | None = Field(
-        default=None, alias="TYPE_ACT42D0"
-    )
-    type_act29_side: dict[str, Act29SideData] | None = Field(
-        default=None, alias="TYPE_ACT29SIDE"
-    )
-    year_5_general: dict[str, ActivityYear5GeneralData] | None = Field(
-        default=None, alias="YEAR_5_GENERAL"
-    )
-    type_act35_side: dict[str, Act35SideData] | None = Field(
-        default=None, alias="TYPE_ACT35SIDE"
-    )
-    vec_break_v2: dict[str, ActVecBreakV2Data] | None = Field(
-        default=None, alias="VEC_BREAK_V2"
-    )
-    type_act36_side: dict[str, Act36SideData] | None = Field(
-        default=None, alias="TYPE_ACT36SIDE"
-    )
-    type_act38_side: dict[str, Act38SideData] | None = Field(
-        default=None, alias="TYPE_ACT38SIDE"
-    )
+    checkin_only: dict[str, DefaultCheckInData] | None = Field(default=None, alias="CHECKIN_ONLY")
+    checkin_all_player: dict[str, AllPlayerCheckinData] | None = Field(default=None, alias="CHECKIN_ALL_PLAYER")
+    checkin_vs: dict[str, VersusCheckInData] | None = Field(default=None, alias="CHECKIN_VS")
+    type_act3_d0: dict[str, Act3D0Data] | None = Field(default=None, alias="TYPE_ACT3D0")
+    type_act4_d0: dict[str, Act4D0Data] | None = Field(default=None, alias="TYPE_ACT4D0")
+    type_act5_d0: dict[str, Act5D0Data] | None = Field(default=None, alias="TYPE_ACT5D0")
+    type_act5_d1: dict[str, Act5D1Data] | None = Field(default=None, alias="TYPE_ACT5D1")
+    collection: dict[str, ActivityCollectionData] | None = Field(default=None, alias="COLLECTION")
+    type_act9_d0: dict[str, Act9D0Data] | None = Field(default=None, alias="TYPE_ACT9D0")
+    type_act12_side: dict[str, Act12SideData] | None = Field(default=None, alias="TYPE_ACT12SIDE")
+    type_act13_side: dict[str, Act13SideData] | None = Field(default=None, alias="TYPE_ACT13SIDE")
+    type_act17_side: dict[str, Act17sideData] | None = Field(default=None, alias="TYPE_ACT17SIDE")
+    type_act20_side: dict[str, Act20SideData] | None = Field(default=None, alias="TYPE_ACT20SIDE")
+    type_act21_side: dict[str, Act21SideData] | None = Field(default=None, alias="TYPE_ACT21SIDE")
+    login_only: dict[str, ActivityLoginData] | None = Field(default=None, alias="LOGIN_ONLY")
+    switch_only: dict[str, ActivitySwitchCheckinData] | None = Field(default=None, alias="SWITCH_ONLY")
+    ministory: dict[str, ActivityMiniStoryData] | None = Field(default=None, alias="MINISTORY")
+    roguelike: dict[str, ActivityRoguelikeData] | None = Field(default=None, alias="ROGUELIKE")
+    interlock: dict[str, ActivityInterlockData] | None = Field(default=None, alias="INTERLOCK")
+    boss_rush: dict[str, ActivityBossRushData] | None = Field(default=None, alias="BOSS_RUSH")
+    float_parade: dict[str, ActivityFloatParadeData] | None = Field(default=None, alias="FLOAT_PARADE")
+    main_buff: dict[str, ActivityMainlineBuffData] | None = Field(default=None, alias="MAIN_BUFF")
+    type_act24_side: dict[str, Act24SideData] | None = Field(default=None, alias="TYPE_ACT24SIDE")
+    type_act25_side: dict[str, Act25SideData] | None = Field(default=None, alias="TYPE_ACT25SIDE")
+    type_act27_side: dict[str, Act27SideData] | None = Field(default=None, alias="TYPE_ACT27SIDE")
+    type_act42_d0: dict[str, Act42D0Data] | None = Field(default=None, alias="TYPE_ACT42D0")
+    type_act29_side: dict[str, Act29SideData] | None = Field(default=None, alias="TYPE_ACT29SIDE")
+    year_5_general: dict[str, ActivityYear5GeneralData] | None = Field(default=None, alias="YEAR_5_GENERAL")
+    type_act35_side: dict[str, Act35SideData] | None = Field(default=None, alias="TYPE_ACT35SIDE")
+    vec_break_v2: dict[str, ActVecBreakV2Data] | None = Field(default=None, alias="VEC_BREAK_V2")
+    type_act36_side: dict[str, Act36SideData] | None = Field(default=None, alias="TYPE_ACT36SIDE")
+    type_act38_side: dict[str, Act38SideData] | None = Field(default=None, alias="TYPE_ACT38SIDE")
     arcade: dict[str, ActArcadeData] | None = Field(default=None, alias="ARCADE")
-    multiplay_v3: dict[str, ActMultiV3Data] | None = Field(
-        default=None, alias="MULTIPLAY_V3"
-    )
-    type_mainss: dict[str, ActMainSSData] | None = Field(
-        default=None, alias="TYPE_MAINSS"
-    )
-    enemy_duel: dict[str, ActivityEnemyDuelData] | None = Field(
-        default=None, alias="ENEMY_DUEL"
-    )
-    type_act42_side: dict[str, Act42SideData] | None = Field(
-        default=None, alias="TYPE_ACT42SIDE"
-    )
-    type_act44_side: dict[str, Act44SideData] | None = Field(
-        default=None, alias="TYPE_ACT44SIDE"
-    )
-    halfidle_verify1: dict[str, Act1VHalfIdleData] | None = Field(
-        default=None, alias="HALFIDLE_VERIFY1"
-    )
-    type_act45_side: dict[str, Act45SideData] | None = Field(
-        default=None, alias="TYPE_ACT45SIDE"
-    )
-    recruit_only: dict[str, ActRecruitOnlyData] | None = Field(
-        default=None, alias="RECRUIT_ONLY"
-    )
-    type_act46_side: dict[str, Act46SideData] | None = Field(
-        default=None, alias="TYPE_ACT46SIDE"
-    )
-    autochess_season: dict[str, ActAutoChessData] | None = Field(
-        default=None, alias="AUTOCHESS_SEASON"
-    )
-    act_football: dict[str, ActFootballData] | None = Field(
-        default=None, alias="ACT_FOOTBALL"
-    )
+    multiplay_v3: dict[str, ActMultiV3Data] | None = Field(default=None, alias="MULTIPLAY_V3")
+    type_mainss: dict[str, ActMainSSData] | None = Field(default=None, alias="TYPE_MAINSS")
+    enemy_duel: dict[str, ActivityEnemyDuelData] | None = Field(default=None, alias="ENEMY_DUEL")
+    type_act42_side: dict[str, Act42SideData] | None = Field(default=None, alias="TYPE_ACT42SIDE")
+    type_act44_side: dict[str, Act44SideData] | None = Field(default=None, alias="TYPE_ACT44SIDE")
+    halfidle_verify1: dict[str, Act1VHalfIdleData] | None = Field(default=None, alias="HALFIDLE_VERIFY1")
+    type_act45_side: dict[str, Act45SideData] | None = Field(default=None, alias="TYPE_ACT45SIDE")
+    recruit_only: dict[str, ActRecruitOnlyData] | None = Field(default=None, alias="RECRUIT_ONLY")
+    type_act46_side: dict[str, Act46SideData] | None = Field(default=None, alias="TYPE_ACT46SIDE")
+    autochess: dict[str, dict[str, ActAutoChessData]] | None = Field(default=None, alias="AUTOCHESS")
+    act_football: dict[str, ActFootballData] | None = Field(default=None, alias="ACT_FOOTBALL")
     ark_hub: dict[str, ActArkHubData] | None = Field(default=None, alias="ARK_HUB")
-    type_act53_side: dict[str, Act53SideData] | None = Field(
-        default=None, alias="TYPE_ACT53SIDE"
-    )
-    type_act54_side: dict[str, Act54SideData] | None = Field(
-        default=None, alias="TYPE_ACT54SIDE"
-    )
+    type_act53_side: dict[str, Act53SideData] | None = Field(default=None, alias="TYPE_ACT53SIDE")
+    type_act54_side: dict[str, Act54SideData] | None = Field(default=None, alias="TYPE_ACT54SIDE")
     act_dp: dict[str, ActVasebreakerData] | None = Field(default=None, alias="ACT_DP")
+    type_act55_side: dict[str, Act55SideData] | None = Field(default=None, alias="TYPE_ACT55SIDE")
 
 
 class ActMainlineBpExtraDataActMainlineBpExtraPeriodData(GameDataModel):
@@ -7275,17 +7603,13 @@ class ActMainlineBpExtraDataActMainlineBpExtraPeriodData(GameDataModel):
 class ActMainlineBpExtraData(GameDataModel):
     """clz_Torappu_ActMainlineBpExtraData"""
 
-    period_data_list: (
-        list[ActMainlineBpExtraDataActMainlineBpExtraPeriodData] | None
-    ) = None
+    period_data_list: list[ActMainlineBpExtraDataActMainlineBpExtraPeriodData] | None = None
 
 
 class ActivityTableActivityExtraData(GameDataModel):
     """clz_Torappu_ActivityTable_ActivityExtraData"""
 
-    mainline_bp: dict[str, ActMainlineBpExtraData] | None = Field(
-        default=None, alias="MAINLINE_BP"
-    )
+    mainline_bp: dict[str, ActMainlineBpExtraData] | None = Field(default=None, alias="MAINLINE_BP")
 
 
 class HgInternalJObject(GameDataModel):
@@ -8164,6 +8488,20 @@ class HalfIdleData(GameDataModel):
     item_data: dict[str, Act1VHalfIdleItemData] | None = None
 
 
+class ArkNewsDataArkNewsBuffItemData(GameDataModel):
+    """clz_Torappu_ArkNewsData_ArkNewsBuffItemData"""
+
+    level: int = 0
+    desc: str | None = None
+    template_trap_id: str | None = None
+
+
+class ArkNewsData(GameDataModel):
+    """clz_Torappu_ArkNewsData"""
+
+    battle_item_level_data_list: list[ArkNewsDataArkNewsBuffItemData] | None = None
+
+
 class KVSwitchInfo(GameDataModel):
     """clz_Torappu_KVSwitchInfo"""
 
@@ -8458,17 +8796,39 @@ class AutoChessDataAutoChessVersionInfoData(GameDataModel):
 
     version_id: str | None = None
     activity_id: str | None = None
+    enroll_id: str | None = None
+    period_type: str = "SEASON"
+    content_type: str = "NONE"
+    is_content_updated: bool = False
+    is_shop_updated: bool = False
     season_name: str | None = None
+    season_year: str | None = None
+    is_activity_item_max: bool = False
+    is_activity_task_max: bool = False
+    is_offseason: bool = False
+    sort_id: int = 0
+    expire_version: int = 0
     start_time: int = 0
+    end_time: int = 0
 
 
-class AutoChessDataAutoChessBandData(GameDataModel):
-    """clz_Torappu_AutoChessData_AutoChessBandData"""
+class AutoChessDataAutoChessWarmupScheduleData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessWarmupScheduleData"""
 
-    band_id: str | None = None
-    band_name: str | None = None
-    band_icon_id: str | None = None
-    unlock_desc: str | None = None
+    warmup_id: str | None = None
+    version_id: str | None = None
+    start_time: int = 0
+    end_time: int = 0
+    is_main_page_used: bool = False
+
+
+class AutoChessDataAutoChessStagePageDisplayData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessStagePageDisplayData"""
+
+    display_id: str | None = None
+    version_id: str | None = None
+    main_disappear_time: int = 0
+    stage_page_disappear_time: int = 0
 
 
 class AutoChessDataAutoChessCultivateRelationData(GameDataModel):
@@ -8487,27 +8847,6 @@ class AutoChessDataAutoChessEffectTypeData(GameDataModel):
     """clz_Torappu_AutoChessData_AutoChessEffectTypeData"""
 
     description: str | None = None
-
-
-class AutoChessDataAutoChessBondInfoData(GameDataModel):
-    """clz_Torappu_AutoChessData_AutoChessBondInfoData"""
-
-    bond_id: str | None = None
-    bond_type: str = "NONE"
-    power_id_list: list[str] | None = None
-    name: str | None = None
-    icon: str | None = None
-    is_power: bool = False
-    bond_order: int = 0
-    is_hidden_char_list: bool = False
-
-
-class AutoChessDataAutoChessBossInfoData(GameDataModel):
-    """clz_Torappu_AutoChessData_AutoChessBossInfoData"""
-
-    boss_id: str | None = None
-    enemy_id: str | None = None
-    handbook_enemy_id: str | None = None
 
 
 class AutoChessDataAutoChessEnemyTypeData(GameDataModel):
@@ -8547,7 +8886,7 @@ class AutoChessDataAutoChessSkillTriggerData(GameDataModel):
     sub_profession_id: str | None = None
     char_id: str | None = None
     skill_index: int = 0
-    skill_trigger_type: str = "DEFAULT"
+    skill_trigger_types: list[str] | None = None
 
 
 class AutoChessDataAutoChessPrepareStateData(GameDataModel):
@@ -8556,17 +8895,6 @@ class AutoChessDataAutoChessPrepareStateData(GameDataModel):
     effect_id: str | None = None
     buff: str | None = None
     black_board: list[BlackboardDataPair] | None = None
-
-
-class AutoChessDataAutoChessRandomEnemyAttributeData(GameDataModel):
-    """clz_Torappu_AutoChessData_AutoChessRandomEnemyAttributeData"""
-
-    enemy_key: str | None = None
-    level: int = 0
-    extra_enemy_identifier: int = 0
-    extra_enemy_key_list: list[str] | None = None
-    is_fly_enemy: bool = False
-    enemy_battle_effectiveness_factor: float = 0.0
 
 
 class AutoChessDataAutoChessGameTipData(GameDataModel):
@@ -8603,10 +8931,19 @@ class AutoChessDataAutoChessBroadcastData(GameDataModel):
     """clz_Torappu_AutoChessData_AutoChessBroadcastData"""
 
     id: str | None = None
+    id_code: int = 0
     desc: str | None = None
     priority: int = 0
+    comment_icon: str | None = None
     type: str = "NONE"
     param_list: list[str] | None = None
+
+
+class AutoChessDataAutoChessBossDamageStatsStyleData(GameDataModel):
+    """clz_Torappu_AutoChessData_AutoChessBossDamageStatsStyleData"""
+
+    damage_threshold: int = 0
+    style_status_id: str | None = None
 
 
 class AutoChessDataAutoChessConstData(GameDataModel):
@@ -8626,17 +8963,16 @@ class AutoChessDataAutoChessConstData(GameDataModel):
     template_enemy_token_fly: str | None = None
     max_level_cnt: int = 0
     special_enemy_num: int = 0
+    special_enemy_num_single: int = 0
     enemy_type_identifier_to_fill_random: int = 0
     enemy_max_hp_factor: float = 0.0
     enemy_atk_factor: float = 0.0
     enemy_def_factor: float = 0.0
     enemy_magic_resistance_factor: float = 0.0
-    single_reconnect_time: int = 0
     special_phase_stay_time: int = 0
     hint_time_special_phase: int = 0
     hint_time_normal_phase: int = 0
     hint_time_fight_phase: int = 0
-    hint_time_dot_phase: int = 0
     invitation_send_cd: int = 0
     discount_color: str | None = None
     premium_color: str | None = None
@@ -8646,44 +8982,157 @@ class AutoChessDataAutoChessConstData(GameDataModel):
     chat_time: float = 0.0
     broadcast_begin_delay: float = 0.0
     no_money_tips_band: list[str] | None = None
+    no_skill_tips_band: list[str] | None = None
     boss_trailer_start_round: int = 0
     single_closure_stay_time: float = 0.0
     match_time_max: float = 0.0
     enemy_data_level_id: str | None = None
+    player_avatar_win_streak_thresholds: list[int] | None = None
+    player_avatar_boss_damage_thresholds: list[float] | None = None
+    boss_damage_stats_show_delay_time: float = 0.0
+
+
+class AutoChessSkinTimeLimitInfo(GameDataModel):
+    """clz_Torappu_AutoChessSkinTimeLimitInfo"""
+
+    limit_id: str | None = None
+    id: str | None = None
+    avail_start_time: int = 0
+    avail_end_time: int = 0
+
+
+class AutoChessSkinData(GameDataModel):
+    """clz_Torappu_AutoChessSkinData"""
+
+    id: str | None = None
+    name: str | None = None
+    type: str = "ACTIVITY"
+    skin_trap_id: str | None = None
+    rarity: str = "TIER_1"
+    sort_id: int = 0
+    is_time_limit: bool = False
+    thumbnail_pic_id: str | None = None
+    preview_pic_id: str | None = None
+    background_preview_pic_id: str | None = None
+    voice_pack_type: str = "NONE"
+    voice_cv: str | None = None
+    skin_start_time: int = 0
+    skin_desc: str | None = None
+    usage_desc: str | None = None
+    skin_approach: str | None = None
+    time_limit_info_list: dict[str, AutoChessSkinTimeLimitInfo] | None = None
+
+
+class AutoChessSkinColorData(GameDataModel):
+    """clz_Torappu_AutoChessSkinColorData"""
+
+    autochess_skin_id: str | None = None
+    garrison_icon_color_1: str | None = None
+    garrison_icon_color_2: str | None = None
+    garrison_icon_color_3: str | None = None
+    bond_color: str | None = None
+    bond_icon_color: str | None = None
+    chess_name_color: str | None = None
+    sale_color_1: str | None = None
+    sale_color_2: str | None = None
+    destroy_color_1: str | None = None
+    destroy_color_2: str | None = None
+    countdown_hint_color: str | None = None
+    ob_icon_color: str | None = None
+    skin_dark_color: str | None = None
+    skin_light_color: str | None = None
+
+
+class AutoChessSkinVoiceTriggerData(GameDataModel):
+    """clz_Torappu_AutoChessSkinVoiceTriggerData"""
+
+    trigger: str = "HOME_SHOW"
+    probability: float = 0.0
+    cd: int = 0
+    priority: int = 0
+
+
+class AutoChessSkinEffectPreviewData(GameDataModel):
+    """clz_Torappu_AutoChessSkinEffectPreviewData"""
+
+    effect_id: str | None = None
+    sort_id: int = 0
+    title: str | None = None
+    icon_id: str | None = None
+    desc: str | None = None
+
+
+class AutoChessSkinSoundPreviewData(GameDataModel):
+    """clz_Torappu_AutoChessSkinSoundPreviewData"""
+
+    sound_id: str | None = None
+    sort_id: int = 0
+    title: str | None = None
+    voice_use: str | None = None
+    voice_id: str | None = None
+    place_type: str = "HOME_SHOW"
+    sfx_module: str | None = None
+    sfx_play_signal: str | None = None
+    sfx_sub_signal: str | None = None
+
+
+class AutoChessSkinConsts(GameDataModel):
+    """clz_Torappu_AutoChessSkinConsts"""
+
+    default_auto_chess_skin_id: str | None = None
+
+
+class OffseasonConstData(GameDataModel):
+    """clz_Torappu_OffseasonConstData"""
+
+    off_season_band_frequency: int = 0
+
+
+class OffseasonData(GameDataModel):
+    """clz_Torappu_OffseasonData"""
+
+    offseason_id: str | None = None
+    version_id: str | None = None
+    offseason_const_data: OffseasonConstData | None = None
 
 
 class AutoChessData(GameDataModel):
     """clz_Torappu_AutoChessData"""
 
     version_info_dict: dict[str, AutoChessDataAutoChessVersionInfoData] | None = None
+    warmup_schedule_dict: dict[str, AutoChessDataAutoChessWarmupScheduleData] | None = None
+    stage_page_display_dict: dict[str, AutoChessDataAutoChessStagePageDisplayData] | None = None
     band_data_dict: dict[str, AutoChessDataAutoChessBandData] | None = None
-    cultivate_effect_list: list[AutoChessDataAutoChessCultivateRelationData] | None = (
-        None
-    )
+    cultivate_effect_list: list[AutoChessDataAutoChessCultivateRelationData] | None = None
     effect_type_data_dict: dict[str, AutoChessDataAutoChessEffectTypeData] | None = None
     bond_info_dict: dict[str, AutoChessDataAutoChessBondInfoData] | None = None
     boss_info_dict: dict[str, AutoChessDataAutoChessBossInfoData] | None = None
     enemy_type_datas: dict[str, AutoChessDataAutoChessEnemyTypeData] | None = None
     enter_step_list: list[AutoChessDataAutoChessEnterStepData] | None = None
-    shop_state_token_dict: (
-        dict[str, AutoChessDataAutoChessShopStateTokenData] | None
-    ) = None
+    shop_state_token_dict: dict[str, AutoChessDataAutoChessShopStateTokenData] | None = None
     skill_trigger_data_list: list[AutoChessDataAutoChessSkillTriggerData] | None = None
     skill_range_dict: dict[str, str] | None = None
     prepare_state_dict: dict[str, AutoChessDataAutoChessPrepareStateData] | None = None
-    random_enemy_attribute_dict: (
-        dict[str, AutoChessDataAutoChessRandomEnemyAttributeData] | None
-    ) = None
+    random_enemy_attribute_dict: dict[str, AutoChessDataAutoChessRandomEnemyAttributeData] | None = None
     enabled_emoticon_theme_id_list: list[str] | None = None
     game_tips_list: list[AutoChessDataAutoChessGameTipData] | None = None
+    prize_shop_relation_dict: dict[str, str] | None = None
     medal_data_list: list[AutoChessDataAutoChessMedalData] | None = None
-    turn_info_data_dict: (
-        dict[str, dict[int, AutoChessDataAutoChessTurnInfoData]] | None
-    ) = None
+    turn_info_data_dict: dict[str, dict[int, AutoChessDataAutoChessTurnInfoData]] | None = None
     round_score_data_list: list[AutoChessDataAutoChessRoundScoreData] | None = None
     report_player_data_list: list[CommonReportPlayerData] | None = None
     broadcast_list: list[AutoChessDataAutoChessBroadcastData] | None = None
+    boss_damage_stats_style_list: list[AutoChessDataAutoChessBossDamageStatsStyleData] | None = None
     const_data: AutoChessDataAutoChessConstData | None = None
+    skin_data_dict: dict[str, AutoChessSkinData] | None = None
+    skin_color_data_dict: dict[str, AutoChessSkinColorData] | None = None
+    skin_voice_trigger_data_dict: dict[str, AutoChessSkinVoiceTriggerData] | None = None
+    skin_effect_preview_dict: dict[str, list[AutoChessSkinEffectPreviewData]] | None = None
+    skin_sound_preview_dict: dict[str, list[AutoChessSkinSoundPreviewData]] | None = None
+    skin_voice_anim_dict: dict[str, dict[str, str]] | None = None
+    skin_consts: AutoChessSkinConsts | None = None
+    offseason_data_dict: dict[str, dict[str, OffseasonData]] | None = None
+    perm_shop_id: str | None = None
 
 
 class ActArkHubItemData(GameDataModel):
@@ -8832,28 +9281,24 @@ class ActivityTable(GameDataModel):
     siracusa_data: SiracusaData | None = None
     firework_data: FireworkData | None = None
     half_idle_data: HalfIdleData | None = None
+    ark_news_data: ArkNewsData | None = None
     kv_switch_data: dict[str, ActivityKVSwitchData] | None = None
     dyn_entry_switch_data: dict[str, ActivityDynEntrySwitchData] | None = None
     hidden_stage_data: list[ActivityTableActivityHiddenStageData] | None = None
     mission_archives: dict[str, MissionArchiveData] | None = None
     fifth_anniv_explore_data: FifthAnnivExploreData | None = None
-    anniv_7th_data: Anniv7thMainlineData | None = Field(
-        default=None, alias="anniv7thData"
-    )
+    anniv_7th_data: Anniv7thMainlineData | None = Field(default=None, alias="anniv7thData")
     auto_chess_data: AutoChessData | None = None
     arkhub_data: ArkhubData | None = None
     string_res: dict[str, dict[str, str]] | None = None
     activity_traps: dict[str, ActivityTableActivityTrapsData] | None = None
-    activity_trap_missions: dict[str, ActivityTableActivityTrapMissionsData] | None = (
-        None
-    )
+    activity_trap_missions: dict[str, ActivityTableActivityTrapMissionsData] | None = None
     trap_rune_data_dict: dict[str, RuneTablePackedRuneData] | None = None
     activity_template_mission_styles: dict[str, TemplateMissionStyleData] | None = None
-    activity_cross_day_track_type_data_dict: dict[str, CrossDayTrackTypeData] | None = (
-        None
-    )
+    activity_cross_day_track_type_data_dict: dict[str, CrossDayTrackTypeData] | None = None
     activity_cross_day_track_type_map: dict[str, list[str]] | None = None
     activity_story_read_tips_datas: dict[str, StoryReadTipsData] | None = None
+    stages_force_play_act_entry_on_first_read: dict[str, list[str]] | None = None
 
 
 # root_type clz_Torappu_ActivityTable
@@ -9263,31 +9708,53 @@ Act46SideDataAct46SideConstData.model_rebuild()
 Act46SideDataAct46SideMonopolyResourceItemData.model_rebuild()
 Act46SideData.model_rebuild()
 ActAutoChessDataActAutoChessModeData.model_rebuild()
-ActAutoChessDataActAutoChessBaseRewardData.model_rebuild()
+ActAutoChessDataActAutoChessModeGroupData.model_rebuild()
+ActAutoChessDataActAutoChessShopLevelDisplayData.model_rebuild()
+ActAutoChessDataActAutoChessStageData.model_rebuild()
+ActAutoChessDataActAutochessSpecialEnemyTypeEntry.model_rebuild()
+ActivityCommonMilestoneData.model_rebuild()
+ActivityPeriodicalRewardConf.model_rebuild()
+ActAutoChessDataActAutoChessPlayerTitleData.model_rebuild()
+ActAutoChessDataActAutoChessShopCharChessInfoData.model_rebuild()
+ActAutoChessDataActAutoChessConstData.model_rebuild()
+UITemplateShopTemplateShopDataShopGood.model_rebuild()
+UITemplateShopTemplateShopDataProgessGoodItem.model_rebuild()
+UITemplateShopTemplateShopDataTShopGroup.model_rebuild()
+UITemplateShopTemplateShopDataGroupShopExtraData.model_rebuild()
+UITemplateShopTemplateShopDataShopAccumulativePrizeItem.model_rebuild()
+UITemplateShopTemplateShopData.model_rebuild()
 ActAutoChessDataActAutoChessBandData.model_rebuild()
+ActAutoChessDataActAutoChessBondInfo.model_rebuild()
+ActAutoChessDataActAutoChessGarrisonData.model_rebuild()
+ActAutoChessDataActAutoChessEffectDescParamInfo.model_rebuild()
+ActAutoChessDataActAutoChessEffectDescParamData.model_rebuild()
+ActAutoChessDataActAutoChessEffectInfoData.model_rebuild()
+ActAutoChessDataActAutoChessSkillInfoData.model_rebuild()
+ActAutoChessDataActAutoChessBuffInfoData.model_rebuild()
+ActAutoChessDataActAutoChessShopLevelData.model_rebuild()
 ActAutoChessDataActAutoChessCharChessStatusData.model_rebuild()
 ActAutoChessDataActAutoChessCharChessData.model_rebuild()
-ActAutoChessDataActAutoChessShopLevelData.model_rebuild()
-ActAutoChessDataActAutoChessShopLevelDisplayData.model_rebuild()
 ActAutoChessDataActAutoChessCharShopChessData.model_rebuild()
 ActAutoChessDataAutoChessTrapChessStatusData.model_rebuild()
 ActAutoChessDataActAutoChessTrapChessData.model_rebuild()
 ActAutoChessDataActAutoChessTrapShopChessData.model_rebuild()
-ActAutoChessDataActAutoChessStageData.model_rebuild()
-ActAutoChessDataActAutoChessBattleData.model_rebuild()
-ActAutoChessDataActAutoChessBondInfo.model_rebuild()
-ActAutoChessDataActAutoChessGarrisonData.model_rebuild()
-ActAutoChessDataActAutoChessEffectInfoData.model_rebuild()
-ActAutoChessDataActAutoChessBuffInfoData.model_rebuild()
 ActAutoChessDataActAutoChessEffectChoiceInfoData.model_rebuild()
+ActAutoChessDataActAutoChessBattleData.model_rebuild()
 ActAutoChessDataActAutochessBossEntry.model_rebuild()
 ActAutoChessDataActAutochessSpecialEnemyEntry.model_rebuild()
-ActAutoChessDataActAutochessSpecialEnemyTypeEntry.model_rebuild()
 ActAutoChessDataActAutoChessTrainingNpcData.model_rebuild()
-ActivityCommonMilestoneData.model_rebuild()
-ActAutoChessDataActAutoChessPlayerTitleData.model_rebuild()
-ActAutoChessDataActAutoChessShopCharChessInfoData.model_rebuild()
-ActAutoChessDataActAutoChessConstData.model_rebuild()
+AutoChessDataAutoChessBandData.model_rebuild()
+AutoChessDataAutoChessBondInfoData.model_rebuild()
+AutoChessDataAutoChessBossInfoData.model_rebuild()
+AutoChessDataAutoChessRandomEnemyAttributeData.model_rebuild()
+ActAutoChessTrainingDataAutoChessTrainingData.model_rebuild()
+ActAutoChessTrainingDataTrainingConstData.model_rebuild()
+ActAutoChessTrainingDataTrainingShopSlotData.model_rebuild()
+ActAutoChessTrainingDataTrainingRoundInfoData.model_rebuild()
+ActAutoChessTrainingDataTrainingSpecialChoiceData.model_rebuild()
+ActAutoChessTrainingDataTrainingNpcDeployData.model_rebuild()
+ActAutoChessTrainingDataTrainingDiyChessData.model_rebuild()
+ActAutoChessTrainingData.model_rebuild()
 ActAutoChessData.model_rebuild()
 ActFootballDataActFootballZoneAdditionData.model_rebuild()
 ActFootballDataActFootballStageAdditionData.model_rebuild()
@@ -9343,6 +9810,14 @@ ActVasebreakerDataActVasebreakerMilestoneItemData.model_rebuild()
 ActVasebreakerDataActVasebreakerStickerData.model_rebuild()
 ActVasebreakerDataActVasebreakerConstData.model_rebuild()
 ActVasebreakerData.model_rebuild()
+Act55SideDataAct55SideZoneAdditionData.model_rebuild()
+Act55SideDataAct55SideNewspaperData.model_rebuild()
+Act55SideDataAct55SideFixedReportData.model_rebuild()
+Act55SideDataAct55SideHandReportData.model_rebuild()
+Act55SideDataAct55SideHandReportColorData.model_rebuild()
+Act55SideDataAct55SideBattleItemLevelData.model_rebuild()
+Act55SideDataAct55SideConstData.model_rebuild()
+Act55SideData.model_rebuild()
 ActivityTableActivityDetailTable.model_rebuild()
 ActMainlineBpExtraDataActMainlineBpExtraPeriodData.model_rebuild()
 ActMainlineBpExtraData.model_rebuild()
@@ -9428,6 +9903,8 @@ FireworkDataConstData.model_rebuild()
 FireworkData.model_rebuild()
 Act1VHalfIdleItemData.model_rebuild()
 HalfIdleData.model_rebuild()
+ArkNewsDataArkNewsBuffItemData.model_rebuild()
+ArkNewsData.model_rebuild()
 KVSwitchInfo.model_rebuild()
 ActivityKVSwitchData.model_rebuild()
 DynEntrySwitchInfo.model_rebuild()
@@ -9455,23 +9932,31 @@ Anniv7thDisplayNodeData.model_rebuild()
 Anniv7thClueConstData.model_rebuild()
 Anniv7thMainlineData.model_rebuild()
 AutoChessDataAutoChessVersionInfoData.model_rebuild()
-AutoChessDataAutoChessBandData.model_rebuild()
+AutoChessDataAutoChessWarmupScheduleData.model_rebuild()
+AutoChessDataAutoChessStagePageDisplayData.model_rebuild()
 AutoChessDataAutoChessCultivateRelationData.model_rebuild()
 AutoChessDataAutoChessEffectTypeData.model_rebuild()
-AutoChessDataAutoChessBondInfoData.model_rebuild()
-AutoChessDataAutoChessBossInfoData.model_rebuild()
 AutoChessDataAutoChessEnemyTypeData.model_rebuild()
 AutoChessDataAutoChessEnterStepData.model_rebuild()
 AutoChessDataAutoChessShopStateTokenData.model_rebuild()
 AutoChessDataAutoChessSkillTriggerData.model_rebuild()
 AutoChessDataAutoChessPrepareStateData.model_rebuild()
-AutoChessDataAutoChessRandomEnemyAttributeData.model_rebuild()
 AutoChessDataAutoChessGameTipData.model_rebuild()
 AutoChessDataAutoChessMedalData.model_rebuild()
 AutoChessDataAutoChessTurnInfoData.model_rebuild()
 AutoChessDataAutoChessRoundScoreData.model_rebuild()
 AutoChessDataAutoChessBroadcastData.model_rebuild()
+AutoChessDataAutoChessBossDamageStatsStyleData.model_rebuild()
 AutoChessDataAutoChessConstData.model_rebuild()
+AutoChessSkinTimeLimitInfo.model_rebuild()
+AutoChessSkinData.model_rebuild()
+AutoChessSkinColorData.model_rebuild()
+AutoChessSkinVoiceTriggerData.model_rebuild()
+AutoChessSkinEffectPreviewData.model_rebuild()
+AutoChessSkinSoundPreviewData.model_rebuild()
+AutoChessSkinConsts.model_rebuild()
+OffseasonConstData.model_rebuild()
+OffseasonData.model_rebuild()
 AutoChessData.model_rebuild()
 ActArkHubItemData.model_rebuild()
 ArkhubData.model_rebuild()

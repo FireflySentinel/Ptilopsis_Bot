@@ -54,6 +54,19 @@ class PlayerSideMask(IntEnum):
     ALL = 0
     SIDE_A = 2
     SIDE_B = 4
+    SIDE_C = 8
+    SIDE_D = 16
+    NONE = 255
+
+
+class MapLayerMask(IntEnum):
+    """enum__Torappu_MapLayerMask"""
+
+    ALL = 0
+    LAYER_A = 2
+    LAYER_B = 4
+    LAYER_C = 8
+    LAYER_D = 16
     NONE = 255
 
 
@@ -175,6 +188,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class CrisisV2SeasonInfo(GameDataModel):
@@ -221,6 +237,7 @@ class RuneDataSelector(GameDataModel):
     profession_mask: str = "NONE"
     buildable_mask: str = "NONE"
     player_side_mask: str = "ALL"
+    map_layer_mask: str = "ALL"
     side_type: str = "NONE"
     char_id_filter: list[str] | None = None
     char_id_exclude_filter: list[str] | None = None

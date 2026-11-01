@@ -109,6 +109,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class CampaignStageType(IntEnum):
@@ -338,9 +341,7 @@ class CampaignTable(GameDataModel):
     campaign_const_table: CampaignConstTable | None = None
     campaign_rotate_stage_open_times: list[CampaignRotateOpenTimeData] | None = None
     campaign_training_stage_open_times: list[CampaignTrainingOpenTimeData] | None = None
-    campaign_training_all_open_times: list[CampaignTrainingAllOpenTimeData] | None = (
-        None
-    )
+    campaign_training_all_open_times: list[CampaignTrainingAllOpenTimeData] | None = None
     campaign_zone_map_data: dict[str, dict[str, CampaignStageMapData]] | None = None
 
 

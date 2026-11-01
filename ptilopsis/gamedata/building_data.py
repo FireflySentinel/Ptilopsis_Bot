@@ -30,8 +30,9 @@ class BuildingDataRoomType(IntEnum):
     WORKSHOP = 1024
     TRAINING = 2048
     PRIVATE = 4096
-    FUNCTIONAL = 3710
-    ALL = 8191
+    RECYCLE = 8192
+    FUNCTIONAL = 11902
+    ALL = 16383
 
 
 class BuildingDataRoomCategory(IntEnum):
@@ -148,6 +149,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class BuildingDataLayoutDataStoreyDataType(IntEnum):
@@ -595,6 +599,20 @@ class BuildingDataPowerRoomBean(GameDataModel):
     phases: list[BuildingDataPowerPhase] | None = None
 
 
+class BuildingDataRecyclePhase(GameDataModel):
+    """clz_Torappu_BuildingData_RecyclePhase"""
+
+    recycle_capacity: int = 0
+    recycle_speed: float = 0.0
+
+
+class BuildingDataRecycleBean(GameDataModel):
+    """clz_Torappu_BuildingData_RecycleBean"""
+
+    basic_speed_buff: float = 0.0
+    phases: list[BuildingDataRecyclePhase] | None = None
+
+
 class CharacterDataUnlockCondition(GameDataModel):
     """clz_Torappu_CharacterData_UnlockCondition"""
 
@@ -753,9 +771,7 @@ class BuildingDataCustomDataInteractItem(GameDataModel):
     skin_id: str | None = None
 
 
-class BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData(
-    GameDataModel
-):
+class BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData(GameDataModel):
     """clz_Torappu_BuildingData_CustomData_DiyUISortTemplateListData_DiyUISortTemplateData"""
 
     name: str | None = None
@@ -771,10 +787,7 @@ class BuildingDataCustomDataDiyUISortTemplateListData(GameDataModel):
     expand_state: str | None = None
     default_template_index: int = 0
     default_template_order: str = "DESC"
-    templates: (
-        list[BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData]
-        | None
-    ) = None
+    templates: list[BuildingDataCustomDataDiyUISortTemplateListDataDiyUISortTemplateData] | None = None
 
 
 class BuildingDataCustomData(GameDataModel):
@@ -785,13 +798,9 @@ class BuildingDataCustomData(GameDataModel):
     groups: dict[str, BuildingDataCustomDataGroupData] | None = None
     types: dict[str, BuildingDataCustomDataFurnitureTypeData] | None = None
     sub_types: dict[str, BuildingDataCustomDataFurnitureSubTypeData] | None = None
-    default_furnitures: (
-        dict[str, list[BuildingDataCustomDataDormitoryDefaultFurnitureItem]] | None
-    ) = None
+    default_furnitures: dict[str, list[BuildingDataCustomDataDormitoryDefaultFurnitureItem]] | None = None
     interact_groups: dict[str, list[BuildingDataCustomDataInteractItem]] | None = None
-    diy_ui_sort_templates: (
-        dict[str, dict[str, BuildingDataCustomDataDiyUISortTemplateListData]] | None
-    ) = Field(default=None, alias="diyUISortTemplates")
+    diy_ui_sort_templates: dict[str, dict[str, BuildingDataCustomDataDiyUISortTemplateListData]] | None = Field(default=None, alias="diyUISortTemplates")
 
 
 class BuildingDataManufactFormulaUnlockRoom(GameDataModel):
@@ -974,9 +983,7 @@ class BuildingDataBuildingRoomTypeBuffSortData(GameDataModel):
 
     has_efficiency_sort: bool = False
     default_group_sort_id: int = 0
-    efficiency_target_dict: (
-        dict[str, BuildingDataBuildingRoomTypeBuffSortDataBuffGroupInfo] | None
-    ) = None
+    efficiency_target_dict: dict[str, BuildingDataBuildingRoomTypeBuffSortDataBuffGroupInfo] | None = None
 
 
 class BuildingDataTradingRoomSpecialOrderInfo(GameDataModel):
@@ -990,9 +997,53 @@ class BuildingDataTradingRoomSpecialOrderInfo(GameDataModel):
 class BuildingDataTradingRoomInfoData(GameDataModel):
     """clz_Torappu_BuildingData_TradingRoomInfoData"""
 
-    trading_room_special_order_data: (
-        dict[str, BuildingDataTradingRoomSpecialOrderInfo] | None
-    ) = None
+    trading_room_special_order_data: dict[str, BuildingDataTradingRoomSpecialOrderInfo] | None = None
+
+
+class BuildingDataRecycleRoomOutputPoolData(GameDataModel):
+    """clz_Torappu_BuildingData_RecycleRoomOutputPoolData"""
+
+    item_pool_id: str | None = None
+    item_pool_start_time: int = 0
+    item_pool_end_time: int = 0
+    extra_pool_id: str | None = None
+    extra_pool_requirement: int = 0
+
+
+class BuildingDataRecycleRoomOutputPoolItemData(GameDataModel):
+    """clz_Torappu_BuildingData_RecycleRoomOutputPoolItemData"""
+
+    item_id: str | None = None
+    target_tags: list[str] | None = None
+    weight: int = 0
+    count: int = 0
+    extra_pool_value_change: int = 0
+    is_new: bool = False
+
+
+class BuildingDataRecycleRoomOutputPoolContentData(GameDataModel):
+    """clz_Torappu_BuildingData_RecycleRoomOutputPoolContentData"""
+
+    items: list[BuildingDataRecycleRoomOutputPoolItemData] | None = None
+
+
+class BuildingDataRecycleRoomInputItemData(GameDataModel):
+    """clz_Torappu_BuildingData_RecycleRoomInputItemData"""
+
+    item_id: str | None = None
+    added_time: int = 0
+
+
+class BuildingDataRecycleRoomConsts(GameDataModel):
+    """clz_Torappu_BuildingData_RecycleRoomConsts"""
+
+    recycle_time_requirement: int = 0
+    recycle_base_capacity: int = 0
+    recycle_boost_speed: float = 0.0
+    recycle_boost_limit: int = 0
+    recycle_boost_limit_protect: int = 0
+    recycle_speed_up_unlock_level: int = 0
+    recycle_two_person_unlock_level: int = 0
 
 
 class BuildingData(GameDataModel):
@@ -1058,6 +1109,7 @@ class BuildingData(GameDataModel):
     workshop_data: BuildingDataRoomBean1BuildingDataWorkshopPhase | None = None
     training_data: BuildingDataTrainingBean | None = None
     power_data: BuildingDataPowerRoomBean | None = None
+    recycle_data: BuildingDataRecycleBean | None = None
     chars: dict[str, BuildingDataBuildingCharacter] | None = None
     buffs: dict[str, BuildingDataBuildingBuff] | None = None
     workshop_bonus: dict[str, list[str]] | None = None
@@ -1075,14 +1127,16 @@ class BuildingData(GameDataModel):
     workshop_target_des_dict: dict[str, str] | None = None
     trading_order_des_dict: dict[str, str] | None = None
     station_manage_const_data: BuildingDataStationManageConstData | None = None
-    station_manage_filter_infos: (
-        dict[int, BuildingDataStationManageFilterInfo] | None
-    ) = None
+    station_manage_filter_infos: dict[int, BuildingDataStationManageFilterInfo] | None = None
     music_data: BuildingDataMusicData | None = None
     emojis: list[str] | None = None
     category_names: dict[str, str] | None = None
     buff_sort_data: dict[str, BuildingDataBuildingRoomTypeBuffSortData] | None = None
     trading_room_info_data: BuildingDataTradingRoomInfoData | None = None
+    recycle_room_output_pool_datas: dict[str, BuildingDataRecycleRoomOutputPoolData] | None = None
+    recycle_room_output_pool_content_datas: dict[str, BuildingDataRecycleRoomOutputPoolContentData] | None = None
+    recycle_room_input_item_datas: dict[str, BuildingDataRecycleRoomInputItemData] | None = None
+    recycle_room_consts: BuildingDataRecycleRoomConsts | None = None
 
 
 # root_type clz_Torappu_BuildingData
@@ -1123,6 +1177,8 @@ BuildingDataTrainingPhase.model_rebuild()
 BuildingDataTrainingBean.model_rebuild()
 BuildingDataPowerPhase.model_rebuild()
 BuildingDataPowerRoomBean.model_rebuild()
+BuildingDataRecyclePhase.model_rebuild()
+BuildingDataRecycleBean.model_rebuild()
 CharacterDataUnlockCondition.model_rebuild()
 BuildingDataBuildingBuffCharSlotSlotItem.model_rebuild()
 BuildingDataBuildingBuffCharSlot.model_rebuild()
@@ -1161,4 +1217,9 @@ BuildingDataBuildingRoomTypeBuffSortDataBuffGroupInfo.model_rebuild()
 BuildingDataBuildingRoomTypeBuffSortData.model_rebuild()
 BuildingDataTradingRoomSpecialOrderInfo.model_rebuild()
 BuildingDataTradingRoomInfoData.model_rebuild()
+BuildingDataRecycleRoomOutputPoolData.model_rebuild()
+BuildingDataRecycleRoomOutputPoolItemData.model_rebuild()
+BuildingDataRecycleRoomOutputPoolContentData.model_rebuild()
+BuildingDataRecycleRoomInputItemData.model_rebuild()
+BuildingDataRecycleRoomConsts.model_rebuild()
 BuildingData.model_rebuild()

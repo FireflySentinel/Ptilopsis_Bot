@@ -167,6 +167,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class ZoneData(GameDataModel):
@@ -289,9 +292,7 @@ class ZoneRecordMissionData(GameDataModel):
 class ZoneMetaData(GameDataModel):
     """clz_Torappu_ZoneMetaData"""
 
-    zone_record_mission_data: dict[str, ZoneRecordMissionData] | None = Field(
-        default=None, alias="ZoneRecordMissionData"
-    )
+    zone_record_mission_data: dict[str, ZoneRecordMissionData] | None = Field(default=None, alias="ZoneRecordMissionData")
 
 
 class ZoneTable(GameDataModel):

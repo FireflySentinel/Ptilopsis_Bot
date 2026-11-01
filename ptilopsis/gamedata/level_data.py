@@ -72,6 +72,8 @@ class PlayerSideMask(IntEnum):
     ALL = 0
     SIDE_A = 2
     SIDE_B = 4
+    SIDE_C = 8
+    SIDE_D = 16
     NONE = 255
 
 
@@ -381,6 +383,7 @@ class AttributesData(GameDataModel):
     taunt_level: int = 0
     mass_level: int = 0
     base_force_level: int = 0
+    block_volume: int = 0
     stun_immune: bool = False
     silence_immune: bool = False
     sleep_immune: bool = False
@@ -488,6 +491,7 @@ class EnemyDatabaseAttributesData(GameDataModel):
     damage_hitrate_physical: UndefinableFloat | None = None
     damage_hitrate_magical: UndefinableFloat | None = None
     ep_break_recover_speed: UndefinableFloat | None = None
+    block_volume: UndefinableInt | None = None
     stun_immune: UndefinableBool | None = None
     silence_immune: UndefinableBool | None = None
     sleep_immune: UndefinableBool | None = None

@@ -102,6 +102,7 @@ class EnemyDatabaseAttributesData(GameDataModel):
     damage_hitrate_physical: UndefinableFloat | None = None
     damage_hitrate_magical: UndefinableFloat | None = None
     ep_break_recover_speed: UndefinableFloat | None = None
+    block_volume: UndefinableInt | None = None
     stun_immune: UndefinableBool | None = None
     silence_immune: UndefinableBool | None = None
     sleep_immune: UndefinableBool | None = None

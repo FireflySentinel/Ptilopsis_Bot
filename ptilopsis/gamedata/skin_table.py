@@ -126,6 +126,7 @@ class SpDynIllustInfo(GameDataModel):
     sp_illust_id: str | None = None
     sp_portrait_id: str | None = None
     sp_avatar_id: str | None = None
+    sp_dyn_entrance_id: str | None = None
 
 
 class SkinTable(GameDataModel):

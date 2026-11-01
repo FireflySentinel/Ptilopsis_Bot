@@ -174,6 +174,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class StageDropType(IntEnum):
@@ -426,6 +429,7 @@ class StageData(GameDataModel):
     is_story_only: bool = False
     appearance_style: str = "MAIN_NORMAL"
     stage_drop_info: StageDataStageDropInfo | None = None
+    level_map_id: str | None = None
     can_use_charm: bool = False
     can_use_tech: bool = False
     can_use_trap_tool: bool = False
@@ -728,7 +732,7 @@ class StorylineTagData(GameDataModel):
 class StorylineConstData(GameDataModel):
     """clz_Torappu_StorylineConstData"""
 
-    recommend_hide_guide_group_id: str | None = None
+    recommend_hide_guide_group_id: list[str] | None = None
     tutorial_select_storyline_id: str | None = None
     mainline_storyline_id: str | None = None
 
@@ -837,9 +841,7 @@ class StageTable(GameDataModel):
     stage_start_conds: dict[str, StageStartCond] | None = None
     diff_group_table: dict[str, StageDiffGroupTable] | None = None
     story_stage_show_group: dict[str, dict[str, StoryStageShowGroup]] | None = None
-    special_battle_finish_stage_data: dict[str, SpecialBattleFinishStageData] | None = (
-        None
-    )
+    special_battle_finish_stage_data: dict[str, SpecialBattleFinishStageData] | None = None
     record_reward_data: dict[str, RecordRewardServerData] | None = None
     ap_protect_zone_info: dict[str, ApProtectZoneInfo] | None = None
     anti_spoiler_dict: dict[str, list[str]] | None = None

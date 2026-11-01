@@ -26,6 +26,7 @@ class MissionType(IntEnum):
     RETRO = 9
     SPECIAL_OPERATOR = 10
     SPECIAL_OPERATOR_WEEKLY = 11
+    GUIDE_V3 = 12
 
 
 class MissionItemBgType(IntEnum):
@@ -134,6 +135,9 @@ class ItemType(IntEnum):
     STICKER = 92
     ARKHUB = 93
     LINKAGE_TKT_GACHA = 94
+    AUTOCHESS_SKIN = 95
+    AUTOCHESS_MISSION_POINT = 96
+    OPEN_SERVER_CREDIT = 97
 
 
 class CrossAppShareMissionType(IntEnum):
@@ -285,9 +289,7 @@ class MissionTable(GameDataModel):
     so_char_mission_group_info: dict[str, SOCharMissionGroup] | None = None
     daily_mission_group_info: dict[str, DailyMissionGroupInfo] | None = None
     daily_mission_period_info: list[DailyMissionGroupInfo] | None = None
-    mainline_mission_end_image_data_list: list[MainlineMissionEndImageData] | None = (
-        None
-    )
+    mainline_mission_end_image_data_list: list[MainlineMissionEndImageData] | None = None
     cross_app_share_missions: dict[str, CrossAppShareMission] | None = None
     cross_app_share_mission_const: CrossAppShareMissionConst | None = None
     guide_mission_group_info: dict[str, GuideMissionGroupInfo] | None = None
