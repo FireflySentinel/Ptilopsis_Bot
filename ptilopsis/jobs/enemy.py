@@ -33,7 +33,7 @@ from ptilopsis.jobs.params import (
 from ptilopsis.log import logger
 from ptilopsis.utils import richtext
 from ptilopsis.utils.job import job
-from ptilopsis.utils.wiki import Wiki
+from ptilopsis.utils.wiki import PAGE_PROTECTIONS, Wiki
 
 EnemyPages = Annotated[list[str], category("分类:敌人")]
 """wiki ``分类:敌人`` 下的页面名。"""
@@ -429,32 +429,31 @@ async def run(
             "skin": {"默认": {"战斗": {"file": f"{enemy.enemy_id}"}}},
         }
 
-        await wiki.edit(
+        # 图鉴里可能有多个同名条目(如 enemy_1602_blksnk / blksnk2),只按第一个建页
+        existing.add(name)
+        created = await wiki.create(
             title=name,
             text=content,
             summary="init",
             bot=None,
             minor=True,
-            createonly="1",
+            protections=PAGE_PROTECTIONS,
         )
-        await wiki.protect(
-            title=name,
-            protections="edit=autoconfirmed|move=sysop|delete=sysop",
-            reason="protect",
-        )
-        await wiki.edit(
+        if not created:
+            # 不在分类:敌人里却已存在,多半是重定向或同名的其它页面,要人工处理
+            logger.warning(
+                f"Page {name} ({enemy.enemy_id}) already exists but is not "
+                "in 分类:敌人; skipped, resolve it manually and rerun"
+            )
+            continue
+        await wiki.create(
             title=name + "/spine",
             text=json.dumps(spine_content, indent=4, ensure_ascii=False),
             summary="init",
             bot=None,
             minor=True,
-            createonly="1",
             contentmodel="json",
-        )
-        await wiki.protect(
-            title=name + "/spine",
-            protections="edit=autoconfirmed|move=sysop|delete=sysop",
-            reason="protect",
+            protections=PAGE_PROTECTIONS,
         )
         logger.info(f"Created: {name}.")
 

@@ -6,6 +6,7 @@
 """
 
 import json
+from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 
@@ -40,9 +41,14 @@ class StubRichText(richtext.RichText):
 class RecordingWiki:
     """把写入的页面记下来;读取时返回事先给定的页面。"""
 
-    def __init__(self, pages: dict[str, str] | None = None) -> None:
+    def __init__(
+        self, pages: dict[str, str] | None = None, occupied: Iterable[str] = ()
+    ) -> None:
         self.stored = pages or {}
         self.edited: dict[str, str] = {}
+        self.protected: list[str] = []
+        self.occupied = set(occupied)
+        """已存在(如被重定向占用)的页面名,create 时不建也不保护。"""
 
     async def read_many(self, titles: Any) -> dict[str, str]:
         return {title: self.stored[title] for title in titles if title in self.stored}
@@ -52,6 +58,16 @@ class RecordingWiki:
 
     async def protect(self, **_: Any) -> None:
         return None
+
+    async def create(
+        self, title: str, text: str, protections: str | None = None, **_: Any
+    ) -> bool:
+        if title in self.occupied:
+            return False
+        self.edited[title] = text
+        if protections is not None:
+            self.protected.append(title)
+        return True
 
 
 def load_tables() -> dict[str, Any]:
@@ -71,10 +87,7 @@ def load_golden() -> dict[str, str]:
     }
 
 
-async def test_created_pages_match_golden() -> None:
-    tables = load_tables()
-    wiki = RecordingWiki()
-
+async def run_basic(wiki: RecordingWiki, tables: dict[str, Any]) -> None:
     await basic.run.func(
         wiki=wiki,
         character_table=tables["character_table"],
@@ -94,6 +107,13 @@ async def test_created_pages_match_golden() -> None:
         char_list=[],
     )
 
+
+async def test_created_pages_match_golden() -> None:
+    tables = load_tables()
+    wiki = RecordingWiki()
+
+    await run_basic(wiki, tables)
+
     # 外文名重定向页不经过模板渲染,不做 golden
     pages = {
         title: text
@@ -104,6 +124,21 @@ async def test_created_pages_match_golden() -> None:
     assert sorted(pages) == sorted(golden)
     for title, text in pages.items():
         assert text == golden[title], title
+
+
+async def test_occupied_page_is_skipped_and_left_unprotected() -> None:
+    """页面名被重定向等占用时不建页、不保护,也不建指向它的外文名重定向。"""
+
+    tables = load_tables()
+    wiki = RecordingWiki(occupied={"凯尔希"})
+
+    await run_basic(wiki, tables)
+
+    appellation = tables["character_table"]["char_003_kalts"].appellation
+    assert "凯尔希" not in wiki.edited and "凯尔希" not in wiki.protected
+    assert appellation not in wiki.edited
+    # 其它干员照常建页并保护
+    assert {"黑角", "风丸"} <= set(wiki.protected)
 
 
 def test_equip_unlock_favor_without_trust_requirement() -> None:

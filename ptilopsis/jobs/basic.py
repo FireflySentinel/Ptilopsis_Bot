@@ -35,7 +35,7 @@ from ptilopsis.log import logger
 from ptilopsis.utils import richtext
 from ptilopsis.utils.blackboard import blackboard_values, format_paramed_text
 from ptilopsis.utils.job import job
-from ptilopsis.utils.wiki import Wiki
+from ptilopsis.utils.wiki import PAGE_PROTECTIONS, Wiki
 from ptilopsis.wikitext import WikiTemplate, inline_template
 
 TeamTable = dict[str, HandbookTeamData]
@@ -1334,20 +1334,23 @@ async def run(
             handbook_stage=handbook_stage,
         )
 
-        flag_new_char = True
-        await wiki.edit(
+        created = await wiki.create(
             title=char.name,
             text=char_info,
             summary="init",
             bot=None,
             minor=True,
-            createonly="1",
+            protections=PAGE_PROTECTIONS,
         )
-        await wiki.protect(
-            title=char.name,
-            protections="edit=autoconfirmed|move=sysop|delete=sysop",
-            reason="protect",
-        )
+        if not created:
+            # 不在分类:干员里却已存在,多半是重定向或同名的其它页面,要人工处理;
+            # 外文名重定向也不建,否则会指向占了名字的那个页面
+            logger.warning(
+                f"Page {char.name} ({char_key}) already exists but is not "
+                "in 分类:干员; skipped, resolve it manually and rerun"
+            )
+            continue
+        flag_new_char = True
         if char.name != char.appellation:
             redirect_text = f"#redirect [[{char.name}]]"
             await wiki.edit(

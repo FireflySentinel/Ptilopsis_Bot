@@ -70,6 +70,16 @@ class RecordingWiki:
     async def protect(self, **kwargs: Any) -> None:
         return None
 
+    async def create(
+        self,
+        protections: str | None = None,
+        protect_reason: str | None = None,
+        **kwargs: Any,
+    ) -> bool:
+        # 与 Wiki 的 dev 模式一致:不知道页面在不在,按建了处理
+        await self.edit(createonly=True, **kwargs)
+        return True
+
     async def upload(self, *args: Any, **kwargs: Any) -> None:
         return None
 
