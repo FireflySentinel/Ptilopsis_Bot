@@ -7,6 +7,7 @@ import pytest
 
 from ptilopsis.__main__ import jobs_for
 from ptilopsis.gamedata.roguelike_topic_table import RoguelikeTopicTable
+from ptilopsis.jobs import discover_jobs
 from ptilopsis.jobs.relic import (
     GENERIC_OBTAIN,
     PREAMBLE,
@@ -413,6 +414,7 @@ async def test_job_propagates_unexpected_api_errors() -> None:
 
 
 def test_relic_mode_is_also_in_regular() -> None:
+    discover_jobs()
     assert jobs_for(("relic",)) == ["relic.run"]
     assert jobs_for(("regular",)).count("relic.run") == 1
 

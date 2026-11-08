@@ -8,7 +8,7 @@ from ptilopsis.config import Config, Settings, config, get_settings
 from ptilopsis.jobs import discover_jobs
 from ptilopsis.log import logger
 from ptilopsis.utils.data import YOSTAR_DIR, GameData
-from ptilopsis.utils.job import JobContext, run_jobs
+from ptilopsis.utils.job import JobContext, registered_jobs, run_jobs
 from ptilopsis.utils.wiki import Wiki
 
 MODE_JOBS: dict[str, list[str]] = {
@@ -58,12 +58,43 @@ MODE_JOBS: dict[str, list[str]] = {
 MODES = list(MODE_JOBS)
 
 
-def jobs_for(modes: tuple[str, ...]) -> list[str]:
-    return list(
+def jobs_for(args: tuple[str, ...]) -> list[str]:
+    """把 mode 名与 job 名(``<模块>.<函数>``)混合的参数解析成 job 名列表。
+
+    需要先 :func:`~ptilopsis.jobs.discover_jobs`。mode 名仍按
+    :data:`MODE_JOBS` 的键顺序展开;显式 job 名追加在所有 mode 展开之后,
+    整体保序去重。名字不属于任何 mode 或已注册 job 时抛
+    :class:`click.UsageError`;显式 job 的先后依赖(sidebar 先于 basic)由
+    调用者自己保证。
+    """
+    if not args:
+        return []
+    known = {job.name for job in registered_jobs()}
+    unknown = [arg for arg in args if arg not in MODE_JOBS and arg not in known]
+    if unknown:
+        raise click.UsageError(
+            f"unknown mode/job: {', '.join(unknown)}.\n"
+            f"modes: {', '.join(MODES)}\n"
+            f"jobs: {', '.join(sorted(known))}"
+        )
+    names = list(
         dict.fromkeys(
-            name for mode, names in MODE_JOBS.items() if mode in modes for name in names
+            name for mode, jobs in MODE_JOBS.items() if mode in args for name in jobs
         )
     )
+    missing = [name for name in names if name not in known]
+    if missing:
+        # MODE_JOBS 里的笔误属于配置错误,同样在一切网络操作之前失败
+        raise click.UsageError(
+            f"MODE_JOBS references unregistered jobs: {', '.join(missing)}.\n"
+            f"registered: {', '.join(sorted(known))}"
+        )
+    seen = set(names)
+    for arg in args:
+        if arg not in MODE_JOBS and arg not in seen:
+            seen.add(arg)
+            names.append(arg)
+    return names
 
 
 @click.command(context_settings={"help_option_names": ["-h", "--help"]})
@@ -103,7 +134,12 @@ def jobs_for(modes: tuple[str, ...]) -> list[str]:
     is_flag=True,
     help="Wiki 客户端预览模式，仅打印将要提交的内容，不实际写入",
 )
-@click.argument("modes", nargs=-1, type=click.Choice(MODES))
+@click.argument(
+    "modes",
+    nargs=-1,
+    help="要运行的 mode 名或 job 名(module.function),如 "
+    '"new regular special" 或 "stage.run"',
+)
 def main(
     check_mode: str | None,
     remote: bool,
@@ -119,6 +155,11 @@ def main(
     if modes:
         settings.require_wiki_credentials()
 
+    # 名字先全部解析一遍，写错任何一个都不做任何网络/git 操作就退出
+    if modes:
+        discover_jobs()
+    jobs = jobs_for(modes)
+
     if remote:
         # 国服数据在线读 torappu，只有海外服还依赖子模块
         _git("submodule", "update", "--init", "--remote", "--", YOSTAR_DIR)
@@ -127,9 +168,7 @@ def main(
         game_config = config
 
     # 网络 I/O 全部在 anyio 事件循环里跑（与 torappu 一致）；git 操作留在外面
-    should_push = anyio.run(
-        _amain, game_config, settings, check_mode, force, dev, modes
-    )
+    should_push = anyio.run(_amain, game_config, settings, check_mode, force, dev, jobs)
     if should_push:
         _push_remote(remote)
 
@@ -140,7 +179,7 @@ async def _amain(
     check_mode: str | None,
     force: bool,
     dev: bool,
-    modes: tuple[str, ...],
+    jobs: list[str],
 ) -> bool:
     """检查版本、跑 job；返回是否需要提交推送。"""
     gamedata = GameData(config=game_config)
@@ -161,9 +200,10 @@ async def _amain(
         elif check_mode == "global":
             await gamedata.unpacker.check_all_update()
             gamedata.unpacker.commit_version()
-            return False
+            # 只记录版本号不跑任务；--remote 下要推送，否则记录只留在 CI 的工作区里
+            return True
 
-        if not modes:
+        if not jobs:
             gamedata.unpacker.commit_version()
             return True
 
@@ -181,8 +221,7 @@ async def _amain(
             # 下一次运行仍能检测到更新并重跑，而不是被误判为「无更新」而跳过
             gamedata.unpacker.commit_version()
 
-            discover_jobs()
-            failed = await run_jobs(jobs_for(modes), JobContext(wiki, gamedata))
+            failed = await run_jobs(jobs, JobContext(wiki, gamedata))
             if failed:
                 logger.error(f"{len(failed)} job(s) failed: {', '.join(failed)}")
         finally:

@@ -1,0 +1,63 @@
+name: ptil
+
+on:
+  workflow_dispatch:
+    inputs:
+      check:
+        description: 版本检查（global 只记录版本号不跑任务，none 跳过检查）
+        type: choice
+        options:
+          - cn
+          - jp
+          - global
+          - none
+        default: cn
+      force:
+        description: 无新版本也强制运行 (--force，仅对 cn 生效)
+        type: boolean
+        default: false
+      modes:
+        description: 要跑的模式或 job，空格分隔 (模式 new/regular/special/jp/weedy/relic/medal/rogue，job 如 stage.run)
+        type: string
+        default: new regular special
+      dev:
+        description: 预览模式，只打印将要提交的内容不实际写入 (--dev)
+        type: boolean
+        default: false
+
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      # --remote 结束后 git push 更新 version_remote.json
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup Python environment
+        uses: ./.github/actions/setup-python
+
+      - name: run
+        env:
+          PTILOPSIS_USERNAME: ${{ secrets.PTILOPSIS_USERNAME }}
+          PTILOPSIS_PASSWORD: ${{ secrets.PTILOPSIS_PASSWORD }}
+          PTILOPSIS_SENTRY_DSN: ${{ secrets.PTILOPSIS_SENTRY_DSN }}
+          CHECK: ${{ inputs.check }}
+          FORCE: ${{ inputs.force }}
+          DEV: ${{ inputs.dev }}
+          MODES: ${{ inputs.modes }}
+        run: |
+          # 关掉 glob 展开，MODES 里的 * ? [ 不被当作路径通配符
+          set -f
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          case "$CHECK" in
+            cn) args="--check" ;;
+            jp) args="--check-jp" ;;
+            global) args="--check-global" ;;
+            *) args="" ;;
+          esac
+          if [ "$FORCE" = "true" ]; then args="$args --force"; fi
+          if [ "$DEV" = "true" ]; then args="$args --dev"; fi
+          # -- 之后都按 mode/job 名解析，MODES 里写了 --force 之类也不会被当成选项
+          uv run ptil $args --remote -- $MODES

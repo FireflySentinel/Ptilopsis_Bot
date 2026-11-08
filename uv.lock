@@ -279,7 +279,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "anyio", specifier = ">=4.10" },
-    { name = "click", specifier = ">=8.1.0,<9.0.0" },
+    { name = "click", specifier = ">=8.5.0,<9.0.0" },
     { name = "httpx2", extras = ["http2"], specifier = ">=2.12.0" },
     { name = "loguru", specifier = ">=0.7.0,<1.0.0" },
     { name = "pydantic", specifier = ">=2.13.4" },
