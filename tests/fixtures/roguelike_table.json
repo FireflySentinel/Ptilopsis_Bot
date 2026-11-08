@@ -1,0 +1,214 @@
+{
+  "_source": "Kengxxiao/ArknightsGameData@63c7cec73c3858d0ae913f85cc89af3cef4d744f, zh_CN/gamedata/excel/roguelike_table.json; selected original records",
+  "itemTable": {
+    "items": {
+      "hp": {
+        "id": "hp",
+        "name": "目标生命",
+        "description": null,
+        "usage": "目标生命",
+        "obtainApproach": "在集成战略模式中获得",
+        "iconId": "hp",
+        "type": "HP",
+        "rarity": "NONE",
+        "value": 0,
+        "sortId": 999,
+        "unlockCond": null,
+        "unlockCondDesc": null,
+        "unlockCondParams": [],
+        "stableUnlockCond": null
+      },
+      "relic_b3": {
+        "id": "relic_b3",
+        "name": "后勤分队",
+        "description": null,
+        "usage": "初始源石锭+20，初始希望+2",
+        "obtainApproach": "在集成战略模式中获得",
+        "iconId": "relic_b3",
+        "type": "RELIC",
+        "rarity": "BORN",
+        "value": 0,
+        "sortId": 999,
+        "unlockCond": "StableGainResource",
+        "unlockCondDesc": "在多局游戏中累计获得150源石锭",
+        "unlockCondParams": [
+          "gold",
+          "150"
+        ],
+        "stableUnlockCond": {
+          "unlockCondDetail": "gold",
+          "unlockCnt": 150
+        }
+      },
+      "relic_2": {
+        "id": "relic_2",
+        "name": "脱水仙人掌干",
+        "description": "这种干缩的奇怪植物看起来并不好吃，而玻利瓦尔人则拿它来泡水喝。",
+        "usage": "可携带干员+1",
+        "obtainApproach": "在集成战略模式中获得",
+        "iconId": "relic_2",
+        "type": "RELIC",
+        "rarity": "NORMAL",
+        "value": 8,
+        "sortId": 2,
+        "unlockCond": null,
+        "unlockCondDesc": null,
+        "unlockCondParams": [],
+        "stableUnlockCond": null
+      },
+      "relic_4": {
+        "id": "relic_4",
+        "name": "商队盒饭",
+        "description": "哥伦比亚城际商队内部发放的方便食品，油炸，热量很高，味道很好，不太健康。",
+        "usage": "可携带干员+2",
+        "obtainApproach": "在集成战略模式中获得",
+        "iconId": "relic_4",
+        "type": "RELIC",
+        "rarity": "RARE",
+        "value": 12,
+        "sortId": 4,
+        "unlockCond": "StableRecruitChar",
+        "unlockCondDesc": "在多局游戏中累计招募总共50名干员（初始不计算）",
+        "unlockCondParams": [
+          "50"
+        ],
+        "stableUnlockCond": {
+          "unlockCondDetail": "",
+          "unlockCnt": 50
+        }
+      },
+      "relic_61": {
+        "id": "relic_61",
+        "name": "酸液源石虫",
+        "description": "战场冷知识：体型较小或幼年期的酸液源石虫可以用作杀伤性投掷物。不要......！",
+        "usage": "所有敌方单位的防御力-21%",
+        "obtainApproach": "在集成战略模式中获得",
+        "iconId": "relic_61",
+        "type": "RELIC",
+        "rarity": "RARE",
+        "value": 12,
+        "sortId": 61,
+        "unlockCond": null,
+        "unlockCondDesc": null,
+        "unlockCondParams": [],
+        "stableUnlockCond": null
+      }
+    },
+    "recruitTickets": {
+      "recruit_ticket_pioneer_sp": {
+        "id": "recruit_ticket_pioneer_sp",
+        "profession": 512,
+        "rarity": 63,
+        "professionList": [
+          "PIONEER"
+        ],
+        "rarityList": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "extraEliteNum": 0,
+        "extraFreeRarity": [
+          3
+        ],
+        "extraCharIds": [
+          "char_504_rguard"
+        ]
+      }
+    },
+    "upgradeTickets": {
+      "upgrade_ticket_all": {
+        "id": "upgrade_ticket_all",
+        "profession": 639,
+        "rarity": 63,
+        "professionList": [
+          "WARRIOR",
+          "SNIPER",
+          "TANK",
+          "MEDIC",
+          "SUPPORT",
+          "CASTER",
+          "SPECIAL",
+          "PIONEER"
+        ],
+        "rarityList": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    "relics": {
+      "relic_b3": {
+        "id": "relic_b3",
+        "buffs": [
+          {
+            "key": "immediate_reward",
+            "blackboard": [
+              {
+                "key": "id",
+                "valueStr": "gold"
+              },
+              {
+                "key": "count",
+                "value": 20.0
+              }
+            ]
+          },
+          {
+            "key": "immediate_reward",
+            "blackboard": [
+              {
+                "key": "id",
+                "valueStr": "population"
+              },
+              {
+                "key": "count",
+                "value": 2.0
+              }
+            ]
+          }
+        ]
+      },
+      "relic_61": {
+        "id": "relic_61",
+        "buffs": [
+          {
+            "key": "global_buff_normal",
+            "blackboard": [
+              {
+                "key": "key",
+                "valueStr": "enemy_def_down"
+              },
+              {
+                "key": "def",
+                "value": -0.21
+              }
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "stages": {
+    "ro_n_1_1": {
+      "id": "ro_n_1_1",
+      "linkedStageId": "",
+      "levelId": "Activities/ACT12D6/level_rogue_1-1",
+      "code": "ISW-NO",
+      "name": "路边劫匪",
+      "loadingPicId": "loading_LM_night",
+      "description": "手持弓弩的劫匪拦住了你，箭矢从四面八方射来，你被包围了。",
+      "eliteDesc": null,
+      "isBoss": 0,
+      "isElite": 0,
+      "difficulty": "NORMAL"
+    }
+  }
+}
