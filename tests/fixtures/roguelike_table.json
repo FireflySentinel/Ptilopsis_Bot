@@ -93,6 +93,107 @@
         "unlockCondParams": [],
         "stableUnlockCond": null
       }
+    },
+    "recruitTickets": {
+      "recruit_ticket_pioneer_sp": {
+        "id": "recruit_ticket_pioneer_sp",
+        "profession": 512,
+        "rarity": 63,
+        "professionList": [
+          "PIONEER"
+        ],
+        "rarityList": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "extraEliteNum": 0,
+        "extraFreeRarity": [
+          3
+        ],
+        "extraCharIds": [
+          "char_504_rguard"
+        ]
+      }
+    },
+    "upgradeTickets": {
+      "upgrade_ticket_all": {
+        "id": "upgrade_ticket_all",
+        "profession": 639,
+        "rarity": 63,
+        "professionList": [
+          "WARRIOR",
+          "SNIPER",
+          "TANK",
+          "MEDIC",
+          "SUPPORT",
+          "CASTER",
+          "SPECIAL",
+          "PIONEER"
+        ],
+        "rarityList": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      }
+    },
+    "relics": {
+      "relic_b3": {
+        "id": "relic_b3",
+        "buffs": [
+          {
+            "key": "immediate_reward",
+            "blackboard": [
+              {
+                "key": "id",
+                "valueStr": "gold"
+              },
+              {
+                "key": "count",
+                "value": 20.0
+              }
+            ]
+          },
+          {
+            "key": "immediate_reward",
+            "blackboard": [
+              {
+                "key": "id",
+                "valueStr": "population"
+              },
+              {
+                "key": "count",
+                "value": 2.0
+              }
+            ]
+          }
+        ]
+      },
+      "relic_61": {
+        "id": "relic_61",
+        "buffs": [
+          {
+            "key": "global_buff_normal",
+            "blackboard": [
+              {
+                "key": "key",
+                "valueStr": "enemy_def_down"
+              },
+              {
+                "key": "def",
+                "value": -0.21
+              }
+            ]
+          }
+        ]
+      }
     }
   },
   "stages": {
