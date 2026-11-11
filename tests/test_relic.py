@@ -125,7 +125,8 @@ def test_active_tools_join_themes_without_inventing_prices() -> None:
     assert params["效果1"].value == "携带1个轰隆隆先生"
     assert params["效果2"].value == "携带2个轰隆隆先生"
     assert params["售价1"].value == params["售价2"].value == ""
-    assert "非标准模式" not in page
+    assert "{{Cbox2|lv=2|mdi=true|icon=progress-question|" in page
+    assert PREAMBLE in page
     assert merge_page(page, tool) == page
     normal = find_common(render_page(relics["普通藏品"])).params
     assert normal["售价1"].value == "8" and "类型" not in normal

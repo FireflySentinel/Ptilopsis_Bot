@@ -63,7 +63,7 @@ PREAMBLE = (
     "以下是部分角标：<br>"
     '<span style="background:#2f2f2f;color:white;padding:0px 5px;'
     "border: 1px solid #ffffff85;border-radius:2px;"
-    'box-shadow: 0 0 5px 1px #5f5f5fa1;">{{mdi|alpha-x-box-outline}}</span> '
+    '">{{mdi|alpha-x-box-outline}}</span> '
     "标志表示收藏品为【内容拓展·X】加入的收藏品<br/>"
     "'''{{模板:收藏品/角标|notrade}}''' 标志表示收藏品不可在【失与得】节点被交换出去。"
     "<br/>'''{{模板:收藏品/角标|stack}}''' 标志表示收藏品拥有计数机制，"
@@ -271,11 +271,13 @@ def render_page(relic: Relic) -> str:
     template = WikiTemplate(TEMPLATE).add_all(header_fields(relic))
     for index, theme in enumerate(relic.themes, 1):
         template.add_all(theme_fields(theme, index))
-    preamble = (
-        "本页记录[[集成战略]]支援装备在各主题中的效果。"
-        if relic.is_active_tool
-        else PREAMBLE
-    )
+    preamble = PREAMBLE
+    if relic.is_active_tool:
+        preamble = (
+            "{{Cbox2|lv=2|mdi=true|icon=progress-question|"
+            "title=这是一件{{color|#a77d21|支援装备}}。|"
+            "text=本页记录[[集成战略]]支援装备在各主题中的效果。}}\n" + PREAMBLE
+        )
     return f"{preamble}\n\n{template}\n"
 
 
