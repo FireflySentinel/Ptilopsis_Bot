@@ -1,18 +1,26 @@
 """收藏品页面:按主题汇总、渲染、合并到已有页面,以及 job 的读写流程,全部离线。"""
 
 from collections.abc import Iterable, Iterator
+from pathlib import Path
 from typing import TYPE_CHECKING, Any, cast
 
 import pytest
 
 from ptilopsis.__main__ import jobs_for
-from ptilopsis.gamedata.roguelike_topic_table import RoguelikeTopicTable
+from ptilopsis.gamedata.roguelike_table import RoguelikeTable
+from ptilopsis.gamedata.roguelike_topic_table import (
+    RoguelikeGameItemData,
+    RoguelikeTopicTable,
+)
 from ptilopsis.jobs import discover_jobs
 from ptilopsis.jobs.relic import (
     GENERIC_OBTAIN,
+    LEGACY_THEME,
     PREAMBLE,
     MergeError,
     Relic,
+    RelicTheme,
+    RelicVariant,
     collect_relics,
     find_common,
     merge_page,
@@ -81,7 +89,10 @@ def tables(
 
 
 def relics_of(*args: Any, **kwargs: Any) -> dict[str, Relic]:
-    return {relic.name: relic for relic in collect_relics(tables(*args, **kwargs))}
+    return {
+        relic.name: relic
+        for relic in collect_relics(tables(*args, **kwargs), RoguelikeTable())
+    }
 
 
 def body(page: str) -> str:
@@ -90,6 +101,28 @@ def body(page: str) -> str:
 
 
 # ----- 汇总与渲染 -----
+
+
+def test_legacy_items_join_modern_themes() -> None:
+    legacy = RoguelikeTable.model_validate_json(
+        (Path(__file__).parent / "fixtures/roguelike_table.json").read_text()
+    )
+    relics = {
+        r.name: r for r in collect_relics(tables([item(1, "food", "商队盒饭")]), legacy)
+    }
+    assert set(relics) == {"脱水仙人掌干", "商队盒饭", "酸液源石虫"}
+    assert relics["酸液源石虫"].title == "酸液源石虫(收藏品)"
+    assert relics["脱水仙人掌干"].title == "脱水仙人掌干"
+    assert relics["脱水仙人掌干"].icon_id == "relic_2"
+    food = relics["商队盒饭"]
+    assert [t.number for t in food.themes] == [0, 1]
+    assert food.icon_id == "rogue_1_relic_food"
+    params = find_common(render_page(food)).params
+    assert params["主题1"].value == LEGACY_THEME
+    assert params["售价1"].value == "12"
+    assert params["效果1"].value == "可携带干员+2"
+    assert params["解锁条件1"].value == "在多局游戏中累计招募总共50名干员（初始不计算）"
+    assert params["售价2"].value == "8"
 
 
 def test_collect_groups_same_name_across_themes_and_difficulty_variants() -> None:
@@ -244,12 +277,67 @@ def test_theme_names_may_be_bold_or_linked(relic: Relic) -> None:
     assert merge_page(page, relic) == page
 
 
+def test_inserts_missing_middle_theme(relic: Relic) -> None:
+    before = human_page([(1, THEMES[1]), (2, THEMES[3])])
+    after = merge_page(before, relic)
+    old, new = find_common(before).params, find_common(after).params
+    assert new["主题2"].value == THEMES[2]
+    assert new["效果2"].value == "藏品的效果"
+    for field in ("主题", "角标", "售价", "效果", "获取条件", "解锁条件"):
+        assert new[field + "3"].raw == old[field + "2"].raw
+    assert merge_page(after, relic) == after
+
+
+def test_prepends_legacy_to_six_themes_preserving_manual_fields() -> None:
+    themes = [
+        RelicTheme(
+            n,
+            f"主题名{n}",
+            [
+                RelicVariant(
+                    0, RoguelikeGameItemData.model_validate(item(n, "a", "藏品"))
+                )
+            ],
+        )
+        for n in range(1, 7)
+    ]
+    legacy = RoguelikeTable.model_validate_json(
+        (Path(__file__).parent / "fixtures/roguelike_table.json").read_text()
+    )
+    assert legacy.item_table and legacy.item_table.items
+    relic = Relic(
+        "藏品",
+        [
+            RelicTheme(
+                0, LEGACY_THEME, [RelicVariant(0, legacy.item_table.items["relic_2"])]
+            ),
+            *themes,
+        ],
+    )
+    before = human_page(
+        [(n, f"主题名{n}") for n in range(1, 7)],
+        extra="\n|易与售价6=2\n|货币6=目标生命\n|效果高度6=80px\n|备注=人工备注",
+    ).replace("|iconId=rogue_2_relic_a", "|iconId=rogue_6_relic_a")
+    after = merge_page(before, relic)
+    old, new = find_common(before).params, find_common(after).params
+    assert new["主题1"].value == LEGACY_THEME
+    for n in range(1, 7):
+        for field in ("主题", "角标", "售价", "效果", "获取条件", "解锁条件"):
+            assert new[f"{field}{n + 1}"].raw == old[f"{field}{n}"].raw
+    for field in ("易与售价", "货币", "效果高度"):
+        assert new[field + "7"].raw == old[field + "6"].raw
+    assert new["备注"].raw == old["备注"].raw
+    assert after.startswith("人工正文\n")
+    assert after.endswith("[[分类:收藏品]]\n")
+    assert merge_page(after, relic) == after
+
+
 @pytest.mark.parametrize(
     ("page", "reason"),
     [
         ("{{干员信息|名称=藏品}}", "不是收藏品页面"),
         ("{{收藏品/common|主题1=a}}{{收藏品/common|主题1=a}}", "2 个"),
-        (human_page([(1, THEMES[1]), (2, THEMES[3])]), "插在已有主题之间"),
+        (human_page([(1, THEMES[3]), (2, THEMES[1])]), "顺序"),
         (human_page([(1, "别的主题")]), "对不上"),
         (human_page([(1, THEMES[1]), (3, THEMES[2])]), "连续"),
         (human_page([(1, THEMES[1])], extra="\n|效果2=x"), "效果2"),
@@ -340,7 +428,7 @@ def relic_tables() -> RoguelikeTopicTable:
         ("", "远程干员获得【迷彩】", "", "远程干员获得【迷彩】"),
     ],
 )
-async def test_job_uses_only_cn_topic_table_text(
+async def test_job_uses_cn_table_text(
     description: str | None,
     usage: str,
     expected_description: str,
@@ -360,11 +448,16 @@ async def test_job_uses_only_cn_topic_table_text(
             self.reads.append((path, region))
             if path == "excel/roguelike_topic_table.json":
                 return topic_table.model_dump(by_alias=True)
+            if path == "excel/roguelike_table.json":
+                return {}
             raise AssertionError(path)
 
     fake, data = FakeWiki({}), FakeGameData()
     await run.run(JobContext(cast("Wiki", fake), cast("GameData", data)))
-    assert data.reads == [("excel/roguelike_topic_table.json", "CN")]
+    assert data.reads == [
+        ("excel/roguelike_topic_table.json", "CN"),
+        ("excel/roguelike_table.json", "CN"),
+    ]
     assert len(fake.edits) == 1 and fake.edits[0]["title"] == "捕鳞蓑"
     params = find_common(fake.edits[0]["text"]).params
     assert params["描述"].value == expected_description
@@ -374,7 +467,9 @@ async def test_job_uses_only_cn_topic_table_text(
 @pytest.mark.anyio
 async def test_job_creates_updates_and_skips(logged_warnings: list[str]) -> None:
     topic_table = relic_tables()
-    relics = {relic.name: relic for relic in collect_relics(topic_table)}
+    relics = {
+        relic.name: relic for relic in collect_relics(topic_table, RoguelikeTable())
+    }
     old = render_page(relics["旧藏品"]).replace(f"|主题2={THEMES[2]}", "|主题2=")
     old = old[: old.index("|主题2=")] + "}}\n"
     fake = FakeWiki(
@@ -389,7 +484,7 @@ async def test_job_creates_updates_and_skips(logged_warnings: list[str]) -> None
     )
     fake.errors["冲突"] = WikiError("editconflict", "Edit conflict.")
 
-    await run.func(cast("Wiki", fake), topic_table)
+    await run.func(cast("Wiki", fake), topic_table, RoguelikeTable())
 
     create, update = fake.edits
     assert create["title"] == "新藏品"
@@ -405,12 +500,28 @@ async def test_job_creates_updates_and_skips(logged_warnings: list[str]) -> None
 
 
 @pytest.mark.anyio
+async def test_job_legacy_uses_collectible_title_without_editing_enemy() -> None:
+    legacy = RoguelikeTable.model_validate_json(
+        (Path(__file__).parent / "fixtures/roguelike_table.json").read_text()
+    )
+    fake = FakeWiki({"酸液源石虫": "{{敌人信息}}"})
+    await run.func(cast("Wiki", fake), tables([]), legacy)
+    assert {edit["title"] for edit in fake.edits} == {
+        "脱水仙人掌干",
+        "商队盒饭",
+        "酸液源石虫(收藏品)",
+    }
+    assert all(edit["createonly"] for edit in fake.edits)
+    assert fake.pages["酸液源石虫"] == "{{敌人信息}}"
+
+
+@pytest.mark.anyio
 async def test_job_propagates_unexpected_api_errors() -> None:
     topic_table = relic_tables()
     fake = FakeWiki({})
     fake.errors["新藏品"] = WikiError("permissiondenied", "no")
     with pytest.raises(WikiError, match="permissiondenied"):
-        await run.func(cast("Wiki", fake), topic_table)
+        await run.func(cast("Wiki", fake), topic_table, RoguelikeTable())
 
 
 def test_relic_mode_is_also_in_regular() -> None:

@@ -5,9 +5,9 @@
 重复运行不会产生新的编辑,所以不需要额外记录状态:
 
 - 页面不存在:按全部主题新建。
-- 页面已存在:刷新 iconId / 稀有度 / 描述,把页面上缺少的主题追加到已有主题之后;
+- 页面已存在:刷新 iconId / 稀有度 / 描述,按顺序插入缺少的主题;
   已有主题的字段、人工添加的参数和模板以外的正文都不动。
-- 页面结构拿不准(重定向、不是收藏品页面、缺的主题要插在已有主题中间等)时跳过
+- 页面结构拿不准(重定向、不是收藏品页面等)时跳过
   并记 warning,交给人工处理。
 """
 
@@ -16,21 +16,28 @@ import re
 from dataclasses import dataclass
 from itertools import pairwise
 
+from ptilopsis.gamedata.roguelike_table import RoguelikeItem
 from ptilopsis.gamedata.roguelike_topic_table import (
     RoguelikeGameItemData,
     RoguelikeTopicDetail,
 )
-from ptilopsis.jobs.params import RoguelikeTopicTable
+from ptilopsis.jobs.params import RoguelikeTable, RoguelikeTopicTable
 from ptilopsis.log import logger
 from ptilopsis.utils.job import job
 from ptilopsis.utils.wiki import Wiki, WikiError
 from ptilopsis.wikitext import WikiTemplate, inline_template
 
 TEMPLATE = "收藏品/common"
-MAX_THEMES = 6
-"""模板:收藏品/common 目前只写了 主题1 ~ 主题6 的参数,更多的主题不会显示。"""
+MAX_THEMES = 7
+"""模板:收藏品/common 支持的主题数。"""
+LEGACY_THEME = "刻俄柏的灰蕈迷境"
+PAGE_TITLES = {
+    "酸液源石虫": "酸液源石虫(收藏品)",
+    "“复仇者”": "“复仇者”(收藏品)",
+}
+"""与敌人等页面重名的收藏品,页面名加 (收藏品) 后缀。"""
 RARITIES = {"NORMAL": 0, "RARE": 1, "SUPER_RARE": 2}
-"""收藏品稀有度 → |稀有度=;商店售价按 (稀有度 + 2) × 4 计算。"""
+"""收藏品稀有度 → |稀有度=;新表售价按 (稀有度 + 2) × 4 计算。"""
 GENERIC_OBTAIN = "在集成战略模式中获得"
 """绝大多数收藏品的获取方式都是这句,页面上留空。"""
 REFRESHED_FIELDS = ("iconId", "稀有度", "描述")
@@ -78,7 +85,7 @@ class RelicVariant:
 
     difficulty: int
     """从哪个难度开始生效。"""
-    item: RoguelikeGameItemData
+    item: RoguelikeGameItemData | RoguelikeItem
 
 
 @dataclass(frozen=True)
@@ -86,7 +93,7 @@ class RelicTheme:
     """收藏品在某个主题里的数据。"""
 
     number: int
-    """rogue_N 的 N。"""
+    """rogue_N 的 N;灰蕈为 0。"""
     name: str
     variants: list[RelicVariant]
     """按生效难度升序,第一个是基础版本。"""
@@ -103,6 +110,10 @@ class Relic:
     name: str
     themes: list[RelicTheme]
     """按 rogue 编号升序。"""
+
+    @property
+    def title(self) -> str:
+        return PAGE_TITLES.get(self.name, self.name)
 
     @property
     def icon_id(self) -> str:
@@ -158,9 +169,19 @@ def theme_relics(detail: RoguelikeTopicDetail) -> dict[str, list[RelicVariant]]:
     return relics
 
 
-def collect_relics(topic_table: RoguelikeTopicTable) -> list[Relic]:
+def collect_relics(
+    topic_table: RoguelikeTopicTable, legacy_table: RoguelikeTable
+) -> list[Relic]:
     """按名称汇总各主题的收藏品;不同主题里的同名收藏品是同一个页面。"""
     relics: dict[str, Relic] = {}
+    if legacy_table.item_table:
+        for item in (legacy_table.item_table.items or {}).values():
+            if item.type != "RELIC" or item.rarity == "BORN":
+                continue
+            name = clean(item.name)
+            relics[name] = Relic(
+                name, [RelicTheme(0, LEGACY_THEME, [RelicVariant(0, item)])]
+            )
     for topic_id, topic in (topic_table.topics or {}).items():
         number = rogue_number(topic_id)
         detail = (topic_table.details or {}).get(topic_id)
@@ -210,6 +231,7 @@ def header_fields(relic: Relic) -> dict[str, str]:
 def theme_fields(theme: RelicTheme, index: int) -> dict[str, str]:
     """页面上第 ``index`` 个主题的字段;角标留给人工填写。"""
     items = [variant.item for variant in theme.variants]
+    base = items[0]
     usage = [clean(item.usage) for item in items]
     obtain = [clean(item.obtain_approach) for item in items]
     obtain = ["" if text == GENERIC_OBTAIN else text for text in obtain]
@@ -217,7 +239,9 @@ def theme_fields(theme: RelicTheme, index: int) -> dict[str, str]:
     return {
         f"主题{index}": wiki_text(theme.name),
         f"角标{index}": "",
-        f"售价{index}": str((theme.rarity + 2) * 4),
+        f"售价{index}": str(
+            base.value if isinstance(base, RoguelikeItem) else (theme.rarity + 2) * 4
+        ),
         f"效果{index}": variant_text(theme.variants, usage, by_difficulty=True),
         f"获取条件{index}": variant_text(
             theme.variants, obtain, by_difficulty=len(set(obtain)) > 1
@@ -426,8 +450,8 @@ def merge_page(text: str, relic: Relic) -> str:
         raise MergeError(f"页面上的主题与游戏数据对不上:{'、'.join(unknown)}")
     order = [names.index(name) for name in live]
     missing = [index for index, name in enumerate(names) if name not in live]
-    if order != sorted(order) or (missing and order and missing[0] < order[-1]):
-        raise MergeError("缺少的主题需要插在已有主题之间,请人工补充并调整编号")
+    if order != sorted(order):
+        raise MergeError("页面上的主题顺序与游戏数据不一致")
 
     edits: list[tuple[int, int, str]] = []
     header = header_fields(relic)
@@ -443,14 +467,35 @@ def merge_page(text: str, relic: Relic) -> str:
         first = min((param.start for param in params.values()), default=call.end)
         edits.append((first, first, "".join(absent)))
     if missing:
-        theme_params = [p for key, p in params.items() if THEME_FIELD.match(key)]
-        at = max((param.value_end for param in theme_params), default=call.end)
-        block = "".join(
-            f"|{key}={value}\n"
-            for index, source in enumerate(missing, len(live) + 1)
-            for key, value in theme_fields(relic.themes[source], index).items()
-        )
-        edits.append((at, at, block if text[:at].endswith("\n") else "\n" + block))
+        # 只改已有参数的编号,保留值、注释和空白。
+        theme_params: dict[int, list[Parameter]] = {}
+        for key, param in params.items():
+            if match := THEME_FIELD.fullmatch(key):
+                old = int(match[1])
+                theme_params.setdefault(old, []).append(param)
+                new = order[old - 1] + 1
+                if new != old:
+                    prefix = text[param.start : param.value_start]
+                    prefix = re.sub(r"\d+(\s*=)$", rf"{new}\g<1>", prefix)
+                    edits.append((param.start, param.value_start, prefix))
+        insertions: dict[int, str] = {}
+        for source in missing:
+            following = next((i + 1 for i, n in enumerate(order) if n > source), None)
+            at = (
+                min(p.start for p in theme_params[following])
+                if following is not None
+                else max(
+                    (p.value_end for group in theme_params.values() for p in group),
+                    default=call.end,
+                )
+            )
+            block = "".join(
+                f"|{key}={value}\n"
+                for key, value in theme_fields(relic.themes[source], source + 1).items()
+            )
+            insertions[at] = insertions.get(at, "") + block
+        for at, block in insertions.items():
+            edits.append((at, at, block if text[:at].endswith("\n") else "\n" + block))
     for start, end, replacement in sorted(edits, reverse=True):
         text = text[:start] + replacement + text[end:]
     return text
@@ -464,8 +509,10 @@ def valid_title(name: str) -> bool:
 
 
 @job
-async def run(wiki: Wiki, topic_table: RoguelikeTopicTable) -> None:
-    relics = collect_relics(topic_table)
+async def run(
+    wiki: Wiki, topic_table: RoguelikeTopicTable, legacy_table: RoguelikeTable
+) -> None:
+    relics = collect_relics(topic_table, legacy_table)
     if invalid := [relic.name for relic in relics if not valid_title(relic.name)]:
         logger.warning(f"收藏品名不能直接作为页面标题,跳过:{'、'.join(invalid)}")
         relics = [relic for relic in relics if valid_title(relic.name)]
@@ -475,13 +522,13 @@ async def run(wiki: Wiki, topic_table: RoguelikeTopicTable) -> None:
             f"需要先扩展模板:{'、'.join(crowded)}"
         )
 
-    pages = await wiki.read_revisions(relic.name for relic in relics)
+    pages = await wiki.read_revisions(relic.title for relic in relics)
     created = updated = 0
     for relic in relics:
-        page = pages.get(relic.name)
+        page = pages.get(relic.title)
         if page is None:
             await wiki.edit(
-                title=relic.name,
+                title=relic.title,
                 text=render_page(relic),
                 summary="init",
                 createonly=True,
