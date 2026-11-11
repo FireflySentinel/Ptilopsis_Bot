@@ -103,6 +103,49 @@ def body(page: str) -> str:
 # ----- 汇总与渲染 -----
 
 
+def test_active_tools_join_themes_without_inventing_prices() -> None:
+    relics = relics_of(
+        [
+            item(
+                1, "tool", "支援轰隆隆", type="ACTIVE_TOOL", usage="携带1个轰隆隆先生"
+            ),
+            item(
+                2, "tool", "支援轰隆隆", type="ACTIVE_TOOL", usage="携带2个轰隆隆先生"
+            ),
+            item(2, "normal", "普通藏品"),
+            item(2, "ticket", "招募券", type="RECRUIT_TICKET"),
+        ]
+    )
+    assert set(relics) == {"支援轰隆隆", "普通藏品"}
+    tool = relics["支援轰隆隆"]
+    assert [t.number for t in tool.themes] == [1, 2]
+    page = render_page(tool)
+    params = find_common(page).params
+    assert params["类型"].value == "支援装备"
+    assert params["效果1"].value == "携带1个轰隆隆先生"
+    assert params["效果2"].value == "携带2个轰隆隆先生"
+    assert params["售价1"].value == params["售价2"].value == ""
+    assert "非标准模式" not in page
+    assert merge_page(page, tool) == page
+    normal = find_common(render_page(relics["普通藏品"])).params
+    assert normal["售价1"].value == "8" and "类型" not in normal
+
+
+def test_active_tool_merge_preserves_manual_price_badge_and_device_link() -> None:
+    records = [item(n, "tool", "支援地雷组", type="ACTIVE_TOOL") for n in (1, 2)]
+    old = relics_of(records[:1])["支援地雷组"]
+    page = render_page(old).replace("|售价1=\n", "|售价1=8\n")
+    page = page.replace("|角标1=\n", "|角标1={{收藏品/角标|notrade}}\n")
+    page = page.replace("|效果1=支援地雷组的效果", "|效果1=携带3个[[干扰地雷]]")
+    tool = relics_of(records)["支援地雷组"]
+    updated = merge_page(page, tool)
+    before, after = find_common(page).params, find_common(updated).params
+    for field in ("类型", "主题1", "售价1", "角标1", "效果1"):
+        assert after[field].raw == before[field].raw
+    assert after["售价2"].value == ""
+    assert merge_page(updated, tool) == updated
+
+
 def test_legacy_items_join_modern_themes() -> None:
     legacy = RoguelikeTable.model_validate_json(
         (Path(__file__).parent / "fixtures/roguelike_table.json").read_text()

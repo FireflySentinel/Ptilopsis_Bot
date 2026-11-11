@@ -116,6 +116,10 @@ class Relic:
         return PAGE_TITLES.get(self.name, self.name)
 
     @property
+    def is_active_tool(self) -> bool:
+        return self.themes[-1].variants[0].item.type == "ACTIVE_TOOL"
+
+    @property
     def icon_id(self) -> str:
         """编号最新的主题里的图标;并列时取先出现的(基础版本)。"""
         icons = [v.item.icon_id for t in self.themes for v in t.variants]
@@ -142,7 +146,11 @@ def rogue_number(identifier: str) -> int | None:
 
 def theme_relics(detail: RoguelikeTopicDetail) -> dict[str, list[RelicVariant]]:
     """一个主题里的收藏品,按页面名分组;难度变体(xx-α 等)归到基础版本名下。"""
-    items = {k: v for k, v in (detail.items or {}).items() if v.type == "RELIC"}
+    items = {
+        k: v
+        for k, v in (detail.items or {}).items()
+        if v.type in {"RELIC", "ACTIVE_TOOL"}
+    }
     # 难度变体 id → (基础版本 id, 生效难度)
     upgrades: dict[str, tuple[str, int]] = {}
     for group in (detail.difficulty_upgrade_relic_groups or {}).values():
@@ -220,18 +228,27 @@ def header_fields(relic: Relic) -> dict[str, str]:
     """模板头部取最新主题的数据;描述只取原表 description,不追加效果术语解释。"""
     latest = relic.themes[-1]
     descriptions = [clean(v.item.description) for v in latest.variants]
-    return {
+    fields = {
         "名称": wiki_text(relic.name),
         "iconId": relic.icon_id,
         "稀有度": str(latest.rarity),
         "描述": variant_text(latest.variants, descriptions, by_difficulty=False),
     }
+    if relic.is_active_tool:
+        fields["类型"] = "支援装备"
+    return fields
 
 
 def theme_fields(theme: RelicTheme, index: int) -> dict[str, str]:
     """页面上第 ``index`` 个主题的字段;角标留给人工填写。"""
     items = [variant.item for variant in theme.variants]
     base = items[0]
+    # 支援装备没有售价字段,不套用普通收藏品的稀有度公式;价格由 wiki 人工补充。
+    price = ""
+    if base.type != "ACTIVE_TOOL":
+        price = str(
+            base.value if isinstance(base, RoguelikeItem) else (theme.rarity + 2) * 4
+        )
     usage = [clean(item.usage) for item in items]
     obtain = [clean(item.obtain_approach) for item in items]
     obtain = ["" if text == GENERIC_OBTAIN else text for text in obtain]
@@ -239,9 +256,7 @@ def theme_fields(theme: RelicTheme, index: int) -> dict[str, str]:
     return {
         f"主题{index}": wiki_text(theme.name),
         f"角标{index}": "",
-        f"售价{index}": str(
-            base.value if isinstance(base, RoguelikeItem) else (theme.rarity + 2) * 4
-        ),
+        f"售价{index}": price,
         f"效果{index}": variant_text(theme.variants, usage, by_difficulty=True),
         f"获取条件{index}": variant_text(
             theme.variants, obtain, by_difficulty=len(set(obtain)) > 1
@@ -256,7 +271,12 @@ def render_page(relic: Relic) -> str:
     template = WikiTemplate(TEMPLATE).add_all(header_fields(relic))
     for index, theme in enumerate(relic.themes, 1):
         template.add_all(theme_fields(theme, index))
-    return f"{PREAMBLE}\n\n{template}\n"
+    preamble = (
+        "本页记录[[集成战略]]支援装备在各主题中的效果。"
+        if relic.is_active_tool
+        else PREAMBLE
+    )
+    return f"{preamble}\n\n{template}\n"
 
 
 # ----- 合并到已有页面 -----
