@@ -31,7 +31,11 @@ TEMPLATE = "收藏品/common"
 MAX_THEMES = 7
 """模板:收藏品/common 支持的主题数。"""
 LEGACY_THEME = "刻俄柏的灰蕈迷境"
-PAGE_TITLES = {"酸液源石虫": "酸液源石虫(收藏品)"}
+PAGE_TITLES = {
+    "酸液源石虫": "酸液源石虫(收藏品)",
+    "“复仇者”": "“复仇者”(收藏品)",
+}
+"""与敌人等页面重名的收藏品,页面名加 (收藏品) 后缀。"""
 RARITIES = {"NORMAL": 0, "RARE": 1, "SUPER_RARE": 2}
 """收藏品稀有度 → |稀有度=;新表售价按 (稀有度 + 2) × 4 计算。"""
 GENERIC_OBTAIN = "在集成战略模式中获得"
@@ -59,7 +63,7 @@ PREAMBLE = (
     "以下是部分角标：<br>"
     '<span style="background:#2f2f2f;color:white;padding:0px 5px;'
     "border: 1px solid #ffffff85;border-radius:2px;"
-    '">{{mdi|alpha-x-box-outline}}</span> '
+    'box-shadow: 0 0 5px 1px #5f5f5fa1;">{{mdi|alpha-x-box-outline}}</span> '
     "标志表示收藏品为【内容拓展·X】加入的收藏品<br/>"
     "'''{{模板:收藏品/角标|notrade}}''' 标志表示收藏品不可在【失与得】节点被交换出去。"
     "<br/>'''{{模板:收藏品/角标|stack}}''' 标志表示收藏品拥有计数机制，"

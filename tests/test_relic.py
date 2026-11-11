@@ -304,6 +304,7 @@ def test_prepends_legacy_to_six_themes_preserving_manual_fields() -> None:
     legacy = RoguelikeTable.model_validate_json(
         (Path(__file__).parent / "fixtures/roguelike_table.json").read_text()
     )
+    assert legacy.item_table and legacy.item_table.items
     relic = Relic(
         "藏品",
         [
