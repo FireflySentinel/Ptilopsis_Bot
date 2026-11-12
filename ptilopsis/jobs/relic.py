@@ -63,7 +63,7 @@ PREAMBLE = (
     "以下是部分角标：<br>"
     '<span style="background:#2f2f2f;color:white;padding:0px 5px;'
     "border: 1px solid #ffffff85;border-radius:2px;"
-    '">{{mdi|alpha-x-box-outline}}</span> '
+    'box-shadow: 0 0 5px 1px #5f5f5fa1;">{{mdi|alpha-x-box-outline}}</span> '
     "标志表示收藏品为【内容拓展·X】加入的收藏品<br/>"
     "'''{{模板:收藏品/角标|notrade}}''' 标志表示收藏品不可在【失与得】节点被交换出去。"
     "<br/>'''{{模板:收藏品/角标|stack}}''' 标志表示收藏品拥有计数机制，"
